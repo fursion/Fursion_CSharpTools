@@ -6,6 +6,7 @@ using System.Text;
 namespace Fursion_CSharpTools
 {
     public delegate void SocketCallBack(byte[] bs);
+    public delegate void ConnnctAction(byte[] bs);
     public static class CSharpTools
     {
         /// <summary>
