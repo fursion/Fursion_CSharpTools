@@ -20,6 +20,7 @@ namespace Fursion_CSharpTools.Net.Public
         /// 数据缓存池
         /// </summary>
         public static List<Tuple<byte[],Connect>> IPC_DATA_POOL;
+        public ProcessingAction ProcessingAction;
         Thread PossingThread;
         public IPC()
         {
@@ -58,9 +59,7 @@ namespace Fursion_CSharpTools.Net.Public
                 {
                     try
                     {
-                        CSharpTools.PrintByteArray(IPC_DATA_POOL[0].Item1);
-                        byte[] b = { 0, 1, 2, 3 };
-                        IPC_DATA_POOL[0].Item2.Send(b);
+                        ProcessingAction?.BeginInvoke(IPC_DATA_POOL[0].Item1, IPC_DATA_POOL[0].Item2, null, null);
                         IPC_DATA_POOL.RemoveAt(0);
                     }
                     catch

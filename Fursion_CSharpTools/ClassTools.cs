@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Fursion_CSharpTools.Net.Public;
 
 namespace Fursion_CSharpTools
 {
     public delegate void SocketCallBack(byte[] bs);
     public delegate void ConnnctAction(byte[] bs);
+    public delegate void ProcessingAction(byte[] bs,Connect connect);
     public static class CSharpTools
     {
         /// <summary>
