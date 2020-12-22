@@ -6,6 +6,13 @@
 
   <ItemGroup>
     <Folder Include="ClassTool\" />
+    <Folder Include="Net\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ProtocolTools">
+      <HintPath>..\..\ProtocolTools\bin\Debug\netstandard2.0\ProtocolTools.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

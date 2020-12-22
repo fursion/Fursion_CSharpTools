@@ -18,7 +18,7 @@ namespace Fursion_CSharpTools
             string str = "";
             foreach (var item in bs)
             {
-                str += item;
+                str += item.ToString();
                 str += "  ";
             }
             Console.WriteLine(str);
