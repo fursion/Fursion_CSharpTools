@@ -192,6 +192,7 @@ namespace Fursion_CSharpTools.Net.Client
         private void DataTransfer(byte[] bs)
         {
             bs.PrintByteArray();
+            Action?.Invoke(bs);
         }
         public void Send(byte[] bs)
         {

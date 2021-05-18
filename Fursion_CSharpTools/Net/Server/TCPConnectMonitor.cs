@@ -14,23 +14,43 @@ namespace Fursion_CSharpTools.Net.Server
     /// <summary>
     /// Socket服务器端监听类
     /// </summary>
-    public class ServerMain : Singleton<ServerMain>
+    public class TCPConnectMonitor : Singleton<TCPConnectMonitor>
     {
         Socket Server_Socket;
-        SocketCallBack SocketCall;
+        /// <summary>
+        /// 用以注册用户自定义函数
+        /// </summary>
+        public SocketCallBack SocketCall;
+        /// <summary>
+        /// 连接中间件数组
+        /// </summary>
         public Connect[] connects;
         const int MAX_CONNECT_NUMBERS = 5000;
-        public int StarServer()
+        /// <summary>
+        /// 自动获取IP地址的启动函数
+        /// </summary>
+        /// <param name="Port"></param>
+        /// <param name="callBack"></param>
+        /// <returns></returns>
+        public int StarServer(int Port,SocketCallBack callBack)
         {
             Server_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             connects = new Connect[MAX_CONNECT_NUMBERS];
-            IPEndPoint iPEnd = new IPEndPoint(IPAddress.Any, 1024);
+            IPEndPoint iPEnd = new IPEndPoint(IPAddress.Any, Port);
+            if (callBack != null)
+                SocketCall += callBack;
             Server_Socket.Bind(iPEnd);
             Server_Socket.Listen(10);
             Server_Socket.BeginAccept(AsyncAccept, null);
             Console.WriteLine(iPEnd.Address.ToString());
             return 1;
         }
+        /// <summary>
+        /// 自定义端口的启动函数
+        /// </summary>
+        /// <param name="IP"></param>
+        /// <param name="Port"></param>
+        /// <param name="callBack"></param>
         public void StarServer(string IP, int Port, SocketCallBack callBack)
         {
 
@@ -38,12 +58,16 @@ namespace Fursion_CSharpTools.Net.Server
             connects = new Connect[MAX_CONNECT_NUMBERS];
             IPEndPoint iPEnd = new IPEndPoint(IPAddress.Parse(IP), Port);
             if (callBack != null)
-                SocketCall = callBack;
+                SocketCall += callBack;
             Server_Socket.Bind(iPEnd);
             Server_Socket.Listen(10);
             Server_Socket.BeginAccept(AsyncAccept, null);
             Console.WriteLine(iPEnd.Address.ToString());
         }
+        /// <summary>
+        /// 获取一个空的连接类索引
+        /// </summary>
+        /// <returns>返回-1表示连接已满</returns>
         public int Get_Connect_Index()
         {
             if (connects == null)
@@ -77,7 +101,7 @@ namespace Fursion_CSharpTools.Net.Server
                 {
                     Connect connect = connects[Index];
                     connect.Init(socket);
-                    Console.WriteLine("与{0}建立连接",connect.GetAddress());
+                    Console.WriteLine("与{0}建立连接", connect.GetAddress());
                     connect.Connect_Socket.BeginReceive(connect.Buffers, connect.buffCount, connect.BuffRemain(), SocketFlags.None, AsyncReceiveCb, connect);
                 }
                 Server_Socket.BeginAccept(AsyncAccept, null);
@@ -89,6 +113,10 @@ namespace Fursion_CSharpTools.Net.Server
             }
 
         }
+        /// <summary>
+        /// 异步接收回调
+        /// </summary>
+        /// <param name="Ar"></param>
         private void AsyncReceiveCb(IAsyncResult Ar)
         {
             Connect connect = (Connect)Ar.AsyncState;
@@ -101,7 +129,7 @@ namespace Fursion_CSharpTools.Net.Server
                     connect.Close();
                 }
                 connect.buffCount += count;
-                PossingData(connect);               
+                PossingData(connect);
             }
             catch (Exception e)
             {
@@ -110,6 +138,10 @@ namespace Fursion_CSharpTools.Net.Server
                 connect.Close();
             }
         }
+        /// <summary>
+        /// 对从网络缓冲区拿到的数据得处理函数
+        /// </summary>
+        /// <param name="connect">连接类的实例</param>
         private void PossingData(Connect connect)
         {
             if (connect.buffCount < sizeof(Int32))
@@ -136,7 +168,7 @@ namespace Fursion_CSharpTools.Net.Server
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message+"  ：分包接收");
+                        Console.WriteLine(e.Message + "  ：分包接收");
                     }
                 }
                 else
@@ -145,7 +177,7 @@ namespace Fursion_CSharpTools.Net.Server
                     {
                         byte[] data = new byte[MessageLen];
                         Array.Copy(connect.Buffers, sizeof(Int32), data, 0, MessageLen);
-                        DataTransfer(data,connect);
+                        DataTransfer(data, connect);
                         connect.buffCount -= (MessageLen + sizeof(Int32));
                         if (connect.buffCount > 0)
                         {
@@ -190,7 +222,7 @@ namespace Fursion_CSharpTools.Net.Server
                     if (connect.MessageLenght == connect.BufferStream.Length)
                     {
                         var bs = connect.BufferStream.ToArray();
-                        DataTransfer(bs,connect);
+                        DataTransfer(bs, connect);
                         connect.MStreamDispose();
                         connect.RestBuffCount();
                         connect.Connect_Socket.BeginReceive(connect.Buffers, connect.buffCount, connect.BuffRemain(), SocketFlags.None, AsyncReceiveCb, connect);
@@ -208,7 +240,7 @@ namespace Fursion_CSharpTools.Net.Server
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message + "Sub err");
+                Console.WriteLine(e.Message + "SubReceiveCb  err");
             }
 
         }
@@ -216,11 +248,21 @@ namespace Fursion_CSharpTools.Net.Server
         /// 数据传送
         /// </summary>
         /// <param name="bs"></param>
-        private void DataTransfer(byte[] bs,Connect connect)
+        private void DataTransfer(byte[] bs, Connect connect)
         {
-            Console.WriteLine("接收完成共{0}byte数据 From:{1}",bs.Length,connect.GetAddress());
-            IPC.GetInstance().InComing_DATA(bs,connect);
-           
+            ///
+            ///待完善
+            Console.WriteLine("接收完成共{0}byte数据 From:{1}", bs.Length, connect.GetAddress());
+            SocketCall?.Invoke(bs);
+           // IPC.GetInstance().InComing_DATA(bs, connect);
+            try
+            {
+                connect.Send(ProtocolTool.PackagingNetPackag(ProtocolBufType.RespondLogin, bs));
+            }
+            catch
+            {
+                Console.WriteLine("发送失败");
+            }
         }
     }
 }

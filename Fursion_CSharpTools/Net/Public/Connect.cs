@@ -80,6 +80,7 @@ namespace Fursion_CSharpTools.Net.Public
             Console.WriteLine("断开连接：" + GetAddress());
             Connect_Socket.Close();
             State_IsUSE = false;
+            
         }
     }
 }

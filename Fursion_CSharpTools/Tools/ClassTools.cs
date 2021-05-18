@@ -6,9 +6,21 @@ using Fursion_CSharpTools.Net.Public;
 
 namespace Fursion_CSharpTools
 {
+    /// <summary>
+    /// 套接字委托，用以承接在收到数据后的自定义处理函数
+    /// </summary>
+    /// <param name="bs"></param>
     public delegate void SocketCallBack(byte[] bs);
+    /// <summary>
+    /// 连接类委托事件
+    /// </summary>
+    /// <param name="bs"></param>
     public delegate void ConnnctAction(byte[] bs);
+
     public delegate void ProcessingAction(byte[] bs,Connect connect);
+    /// <summary>
+    /// 工具类
+    /// </summary>
     public static class CSharpTools
     {
         /// <summary>

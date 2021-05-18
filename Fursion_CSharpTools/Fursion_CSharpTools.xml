@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Fursion_CSharpTools</name>
+    </assembly>
+    <members>
+        <member name="M:Fursion_CSharpTools.Net.Client.Connect_To.SubReceiveCb(System.IAsyncResult)">
+            <summary>
+            增量接收
+            </summary>
+            <param name="ar"></param>
+        </member>
+        <member name="T:Fursion_CSharpTools.Net.Public.IPC">
+            <summary>
+            数据处理中心
+            </summary>
+        </member>
+        <member name="F:Fursion_CSharpTools.Net.Public.IPC.IPC_DATA_POOL">
+            <summary>
+            数据缓存池
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Public.IPC.InComing_DATA(System.Byte[],Fursion_CSharpTools.Net.Public.Connect)">
+            <summary>
+            压入数据到数据池
+            </summary>
+            <param name="BS"></param>
+            <param name="connect"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Public.IPC.Remove_DATA(System.Byte[],Fursion_CSharpTools.Net.Public.Connect)">
+            <summary>
+            从数据池移除数据
+            </summary>
+            <param name="bs"></param>
+            <param name="connect"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Fursion_CSharpTools.Net.Server.ServerMain">
+            <summary>
+            Socket服务器端监听类
+            </summary>
+        </member>
+        <member name="F:Fursion_CSharpTools.Net.Server.ServerMain.SocketCall">
+            <summary>
+            用以注册用户自定义函数
+            </summary>
+        </member>
+        <member name="F:Fursion_CSharpTools.Net.Server.ServerMain.connects">
+            <summary>
+            连接中间件数组
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.ServerMain.StarServer(System.Int32,Fursion_CSharpTools.SocketCallBack)">
+            <summary>
+            自动获取IP地址的启动函数
+            </summary>
+            <param name="Port"></param>
+            <param name="callBack"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.ServerMain.StarServer(System.String,System.Int32,Fursion_CSharpTools.SocketCallBack)">
+            <summary>
+            自定义端口的启动函数
+            </summary>
+            <param name="IP"></param>
+            <param name="Port"></param>
+            <param name="callBack"></param>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.ServerMain.Get_Connect_Index">
+            <summary>
+            获取一个空的连接类索引
+            </summary>
+            <returns>返回-1表示连接已满</returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.ServerMain.AsyncReceiveCb(System.IAsyncResult)">
+            <summary>
+            异步接收回调
+            </summary>
+            <param name="Ar"></param>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.ServerMain.PossingData(Fursion_CSharpTools.Net.Public.Connect)">
+            <summary>
+            对从网络缓冲区拿到的数据得处理函数
+            </summary>
+            <param name="connect">连接类的实例</param>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.ServerMain.SubReceiveCb(System.IAsyncResult)">
+            <summary>
+            增量接收
+            </summary>
+            <param name="ar"></param>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.ServerMain.DataTransfer(System.Byte[],Fursion_CSharpTools.Net.Public.Connect)">
+            <summary>
+            数据传送
+            </summary>
+            <param name="bs"></param>
+        </member>
+        <member name="T:Fursion_CSharpTools.SocketCallBack">
+            <summary>
+            套接字委托，用以承接在收到数据后的自定义处理函数
+            </summary>
+            <param name="bs"></param>
+        </member>
+        <member name="T:Fursion_CSharpTools.ConnnctAction">
+            <summary>
+            连接类委托事件
+            </summary>
+            <param name="bs"></param>
+        </member>
+        <member name="T:Fursion_CSharpTools.CSharpTools">
+            <summary>
+            工具类
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.CSharpTools.PrintByteArray(System.Byte[])">
+            <summary>
+            将Byte数组输出在控制台
+            </summary>
+            <param name="bs"></param>
+        </member>
+        <member name="M:Fursion_CSharpTools.CSharpTools.Check_Key(System.String,System.String)">
+            <summary>
+            Key校验
+            </summary>
+            <param name="Key_Standard"></param>
+            <param name="Key_Input"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Fursion_CSharpTools.Singleton`1">
+            <summary>
+            单例模式
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+    </members>
+</doc>

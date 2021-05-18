@@ -27,6 +27,12 @@ namespace Fursion_CSharpTools.Net.Public
             IPC_DATA_POOL = new List<Tuple<byte[], Connect>>();
             ThreadPool.QueueUserWorkItem(Possing_Action);
         }
+        /// <summary>
+        /// 压入数据到数据池
+        /// </summary>
+        /// <param name="BS"></param>
+        /// <param name="connect"></param>
+        /// <returns></returns>
         public int InComing_DATA(byte[] BS,Connect connect)
         {
             try
@@ -39,6 +45,12 @@ namespace Fursion_CSharpTools.Net.Public
                 return -1;
             }
         }
+        /// <summary>
+        /// 从数据池移除数据
+        /// </summary>
+        /// <param name="bs"></param>
+        /// <param name="connect"></param>
+        /// <returns></returns>
         public int Remove_DATA(byte[] bs,Connect connect)
         {
             try
