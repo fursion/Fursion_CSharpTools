@@ -9,9 +9,9 @@ namespace Fursion_CSharpTools.Tools
     /// </summary>
     public static class FDebug
     {
-        public static void Log(object o)
+        public static void Log(string o,params object [] arg)
         {
-            Console.WriteLine(o);
+            Console.WriteLine(o,arg);
         }
     }
 }

@@ -16,7 +16,11 @@ namespace Fursion_CSharpTools
     /// </summary>
     /// <param name="bs"></param>
     public delegate void ConnnctAction(byte[] bs);
-
+    /// <summary>
+    /// 委托=>处理远端连接发来的信息
+    /// </summary>
+    /// <param name="bs"></param>
+    /// <param name="connect"></param>
     public delegate void ProcessingAction(byte[] bs,Connect connect);
     /// <summary>
     /// 工具类
@@ -24,7 +28,7 @@ namespace Fursion_CSharpTools
     public static class CSharpTools
     {
         /// <summary>
-        /// 将Byte数组输出在控制台
+        /// 打印·Byte数组
         /// </summary>
         /// <param name="bs"></param>
         public static void PrintByteArray(this byte[] bs)
@@ -49,6 +53,11 @@ namespace Fursion_CSharpTools
                 return true;
             return false;
         }
+        /// <summary>
+        /// 通过给定的方法名和类名寻找并执行方法
+        /// </summary>
+        /// <param name="ClassName">类型名</param>
+        /// <param name="MethodName">方法名</param>
         public static void GetMethodDo(string ClassName,string MethodName)
         {
             Type type = Type.GetType(ClassName);
@@ -57,6 +66,11 @@ namespace Fursion_CSharpTools
             object[] parameters = null;
             method.Invoke(obj,parameters);
         }
+        /// <summary>
+        /// 在指定的类型中通过方法名找到方法并执行
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="MethodName">方法名</param>
         public static void GetMethodDo<T>(string MethodName) where T:new()
         {
             T obj = new T();
@@ -74,13 +88,30 @@ namespace Fursion_CSharpTools
     /// <typeparam name="T"></typeparam>
     public class Singleton<T> where T : new()
     {
+        /// <summary>
+        /// 静态实例
+        /// </summary>
         public static T instance;
+        /// <summary>
+        /// 获取实例
+        /// </summary>
+        /// <returns></returns>
         public static T GetInstance()
         {
             if (instance == null)
                 instance = new T();
             return instance;
         }
+    }
+    /// <summary>
+    /// 信息接口
+    /// </summary>
+    public abstract class INfo
+    {
+        /// <summary>
+        /// 版本
+        /// </summary>
+        public string Version { get; set; }
     }
 
 }
