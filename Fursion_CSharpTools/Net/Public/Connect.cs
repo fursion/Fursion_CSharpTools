@@ -4,6 +4,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using Fursion_CSharpTools;
+using Fursion_CSharpTools.Tools;
 using ProtocolTools;
 using System.IO;
 
@@ -57,7 +58,7 @@ namespace Fursion_CSharpTools.Net.Public
                 return 1;
             }catch(Exception e)
             {
-                Console.WriteLine(e.Message);
+                FDebug.Log(e.Message);
                 return -1;
             }
             
@@ -77,7 +78,7 @@ namespace Fursion_CSharpTools.Net.Public
         {
             if (!State_IsUSE)
                 return;
-            Console.WriteLine("断开连接：" + GetAddress());
+            FDebug.Log("断开连接：" + GetAddress());
             Connect_Socket.Close();
             State_IsUSE = false;
             

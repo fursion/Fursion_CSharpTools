@@ -4,6 +4,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using Fursion_CSharpTools;
+using Fursion_CSharpTools.Tools;
 using System.IO;
 
 namespace Fursion_CSharpTools.Net.Client
@@ -29,7 +30,7 @@ namespace Fursion_CSharpTools.Net.Client
             }
             catch (SocketException se)
             {
-                Console.WriteLine(se.Message);
+                FDebug.Log(se.Message);
             }   
         }
         public int BuffRemain()
@@ -62,7 +63,7 @@ namespace Fursion_CSharpTools.Net.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                FDebug.Log(e.Message);
                 return -1;
             }
 
@@ -72,7 +73,7 @@ namespace Fursion_CSharpTools.Net.Client
             try
             {
                 int count = socket.EndReceive(Ar);
-                Console.WriteLine("接收到" + count + ":{0}个字节的数据", count);
+                FDebug.Log("接收到" + count + ":{0}个字节的数据", count);
                 if (count < 0)
                 {
                     //有待修改
@@ -83,8 +84,8 @@ namespace Fursion_CSharpTools.Net.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine(" :连接异常 已经断开");
-                Console.WriteLine(e.Message + "  From:  ServerMain.AsyncReceiveCb");
+                FDebug.Log(" :连接异常 已经断开");
+                FDebug.Log(e.Message + "  From:  ServerMain.AsyncReceiveCb");
                 Close();
             }
         }
@@ -114,7 +115,7 @@ namespace Fursion_CSharpTools.Net.Client
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message + "  ：分包接收");
+                        FDebug.Log(e.Message + "  ：分包接收");
                     }
                 }
                 else
@@ -137,7 +138,7 @@ namespace Fursion_CSharpTools.Net.Client
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message + " pd");
+                        FDebug.Log(e.Message + " pd");
                     }
                 }
             }
@@ -151,7 +152,7 @@ namespace Fursion_CSharpTools.Net.Client
             try
             {
                 int count = socket.EndReceive(ar);
-                Console.WriteLine("收到{0}个byte数据", count);
+                FDebug.Log("收到{0}个byte数据", count);
                 buffCount = count;
                 if (count < 0)
                 {
@@ -179,13 +180,13 @@ namespace Fursion_CSharpTools.Net.Client
                     }
                     else
                     {
-                        Console.WriteLine("MS < s.lenght");
+                        FDebug.Log("MS < s.lenght");
                     }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message + "Sub err");
+                FDebug.Log(e.Message + "Sub err");
             }
 
         }

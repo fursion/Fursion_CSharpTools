@@ -5,13 +5,21 @@ using System.Threading;
 
 namespace Fursion_CSharpTools.Net.Server
 {
-    class Service_MailSystem : Singleton<Service_MailSystem>
+    public class Service_MailSystem : Singleton<Service_MailSystem>
     {
         public void Broadcast()
         {
 
         }
         public void PushMail()
+        {
+
+        }
+        public void Save_IO_MailBody()
+        {
+
+        }
+        public void Save_IO_Header()
         {
 
         }

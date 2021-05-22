@@ -8,6 +8,7 @@ using Fursion_CSharpTools.Net.Public;
 using Fursion_CSharpTools;
 using Protols;
 using ProtocolTools;
+using Fursion_CSharpTools.Tools;
 
 namespace Fursion_CSharpTools.Net.Server
 {
@@ -42,7 +43,7 @@ namespace Fursion_CSharpTools.Net.Server
             Server_Socket.Bind(iPEnd);
             Server_Socket.Listen(10);
             Server_Socket.BeginAccept(AsyncAccept, null);
-            Console.WriteLine(iPEnd.Address.ToString());
+            FDebug.Log(iPEnd.Address.ToString());
             return 1;
         }
         /// <summary>
@@ -53,7 +54,7 @@ namespace Fursion_CSharpTools.Net.Server
         /// <param name="callBack"></param>
         public void StarServer(string IP, int Port, SocketCallBack callBack)
         {
-
+            FDebug.Log("Service starting...");
             Server_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             connects = new Connect[MAX_CONNECT_NUMBERS];
             IPEndPoint iPEnd = new IPEndPoint(IPAddress.Parse(IP), Port);
@@ -62,7 +63,9 @@ namespace Fursion_CSharpTools.Net.Server
             Server_Socket.Bind(iPEnd);
             Server_Socket.Listen(10);
             Server_Socket.BeginAccept(AsyncAccept, null);
-            Console.WriteLine(iPEnd.Address.ToString());
+            FDebug.Log("ServiceAddressIp:{0}", iPEnd.Address.ToString());
+            FDebug.Log("Service started Successfully!");
+            
         }
         /// <summary>
         /// 获取一个空的连接类索引
@@ -95,13 +98,13 @@ namespace Fursion_CSharpTools.Net.Server
                 if (Index < 0)
                 {
                     socket.Close();
-                    Console.WriteLine("警告：连接已满");
+                    FDebug.Log("警告：连接已满");
                 }
                 else
                 {
                     Connect connect = connects[Index];
                     connect.Init(socket);
-                    Console.WriteLine("与{0}建立连接", connect.GetAddress());
+                    FDebug.Log("与{0}建立连接", connect.GetAddress());
                     connect.Connect_Socket.BeginReceive(connect.Buffers, connect.buffCount, connect.BuffRemain(), SocketFlags.None, AsyncReceiveCb, connect);
                 }
                 Server_Socket.BeginAccept(AsyncAccept, null);
@@ -109,7 +112,7 @@ namespace Fursion_CSharpTools.Net.Server
             }
             catch (Exception e)
             {
-                Console.WriteLine("AsyncAccept失败 ：" + e.Message);
+                FDebug.Log("AsyncAccept失败 ：" + e.Message);
             }
 
         }
@@ -133,8 +136,8 @@ namespace Fursion_CSharpTools.Net.Server
             }
             catch (Exception e)
             {
-                Console.WriteLine(connect.GetAddress() + " :连接异常 已经断开");
-                Console.WriteLine(e.Message + "  From:  ServerMain.AsyncReceiveCb");
+                FDebug.Log(connect.GetAddress() + " :连接异常 已经断开");
+                FDebug.Log(e.Message + "  From:  ServerMain.AsyncReceiveCb");
                 connect.Close();
             }
         }
@@ -168,7 +171,7 @@ namespace Fursion_CSharpTools.Net.Server
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message + "  ：分包接收");
+                        FDebug.Log(e.Message + "  ：分包接收");
                     }
                 }
                 else
@@ -191,7 +194,7 @@ namespace Fursion_CSharpTools.Net.Server
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message + " pd");
+                        FDebug.Log(e.Message + " pd");
                     }
                 }
             }
@@ -234,13 +237,13 @@ namespace Fursion_CSharpTools.Net.Server
                     }
                     else
                     {
-                        Console.WriteLine("MS < s.lenght");
+                        FDebug.Log("MS < s.lenght");
                     }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message + "SubReceiveCb  err");
+                FDebug.Log(e.Message + "SubReceiveCb  err");
             }
 
         }
@@ -252,7 +255,7 @@ namespace Fursion_CSharpTools.Net.Server
         {
             ///
             ///待完善
-            Console.WriteLine("接收完成共{0}byte数据 From:{1}", bs.Length, connect.GetAddress());
+            FDebug.Log("接收完成共{0}byte数据 From:{1}", bs.Length, connect.GetAddress());
             SocketCall?.Invoke(bs);
            // IPC.GetInstance().InComing_DATA(bs, connect);
             try
@@ -261,7 +264,7 @@ namespace Fursion_CSharpTools.Net.Server
             }
             catch
             {
-                Console.WriteLine("发送失败");
+                FDebug.Log("发送失败");
             }
         }
     }

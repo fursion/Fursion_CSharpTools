@@ -36,6 +36,50 @@
             <param name="connect"></param>
             <returns></returns>
         </member>
+        <member name="F:Fursion_CSharpTools.Net.Server.Service_IOSystem.MySQLConnectionStatementTemplate">
+            <summary>
+            数据库连接的模板语句；不可直接用于连接，需要调用CreateMySQLConnectionStatement()方法生成实际的SQLConnectionSatement连接数据库;
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.CreateMySQLConnectionStatement(System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            拼接数据库连接语句
+            </summary>
+            <param name="Database">数据库名</param>
+            <param name="DataSource">数据库地址</param>
+            <param name="User_ID">数据库登录用户名</param>
+            <param name="Password">数据库登录密码</param>
+            <param name="port">数据库远程端口号</param>
+            <returns>拼接好的连接语句</returns>
+        </member>
+        <member name="F:Fursion_CSharpTools.Net.Server.Service_IOSystem.MySQLSelectStatementTemplate">
+            <summary>
+            MySQL-Select查询语句模板；需要的参数，查询的列名，表名，限制条件
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.CreateMySQLSelectStatement(System.String,System.String,System.String)">
+            <summary>
+            拼接数据库查询语句
+            </summary>
+            <param name="ColumnName">要查询的列的名字</param>
+            <param name="TableName">数据表的名字</param>
+            <param name="Restrictions">查询的限制条件</param>
+            <returns></returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.CreatSelectRestrictions(System.String,System.String,System.Object)">
+            <summary>
+            查询语句
+            </summary>
+            <param name="term"></param>
+            <param name="MathSymbol">数学符号：= > >=  <![CDATA[=,<,>,>=,<=]]></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Fursion_CSharpTools.Net.Server.IO_SqlQueryCallBackAction">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:Fursion_CSharpTools.Net.Server.Service_MailSystemTool">
             <summary>
             
@@ -190,6 +234,11 @@
         <member name="T:Fursion_CSharpTools.Tools.FDebug">
             <summary>
             
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.FDebug.LogHeader">
+            <summary>
+            输出日期和时间
             </summary>
         </member>
     </members>
