@@ -36,6 +36,11 @@
             <param name="connect"></param>
             <returns></returns>
         </member>
+        <member name="T:Fursion_CSharpTools.Net.Server.Service_IOSystem">
+            <summary>
+            服务器端的IO操作类，包含远程数据库和本地文存储
+            </summary>
+        </member>
         <member name="F:Fursion_CSharpTools.Net.Server.Service_IOSystem.MySQLConnectionStatementTemplate">
             <summary>
             数据库连接的模板语句；不可直接用于连接，需要调用CreateMySQLConnectionStatement()方法生成实际的SQLConnectionSatement连接数据库;
@@ -74,6 +79,33 @@
             <param name="MathSymbol">数学符号：= > >=  <![CDATA[=,<,>,>=,<=]]></param>
             <param name="value"></param>
             <returns></returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.ConnectSQL(System.String)">
+            <summary>
+            创建连接实例
+            </summary>
+            <param name="SQLConnectionStatement"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.QueryData">
+            <summary>
+            数据查询
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.SqlAddData">
+            <summary>
+            向数据库添加数据
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.DeleteData">
+            <summary>
+            从数据库删除数据
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.ModifyData">
+            <summary>
+            修改数据
+            </summary>
         </member>
         <member name="T:Fursion_CSharpTools.Net.Server.IO_SqlQueryCallBackAction">
             <summary>
