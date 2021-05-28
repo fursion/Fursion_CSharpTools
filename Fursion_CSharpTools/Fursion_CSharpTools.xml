@@ -46,6 +46,11 @@
             数据库连接的模板语句；不可直接用于连接，需要调用CreateMySQLConnectionStatement()方法生成实际的SQLConnectionSatement连接数据库;
             </summary>
         </member>
+        <member name="F:Fursion_CSharpTools.Net.Server.Service_IOSystem.SqlConnectionPoolConfig">
+            <summary>
+            MySQL连接池
+            </summary>
+        </member>
         <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.CreateMySQLConnectionStatement(System.String,System.String,System.String,System.String,System.Int32)">
             <summary>
             拼接数据库连接语句
@@ -262,6 +267,23 @@
             <summary>
             版本
             </summary>
+        </member>
+        <member name="T:Fursion_CSharpTools.Tools.DataEncryption">
+            <summary>
+            数据加密工具
+            </summary>
+        </member>
+        <member name="T:Fursion_CSharpTools.Tools.AESEncryption">
+            <summary>
+            AES算法加密
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.AESEncryption.SHACode(System.String)">
+            <summary>
+            采用SHA256的散列加密，不可逆。
+            </summary>
+            <param name="Vaule"></param>
+            <returns></returns>
         </member>
         <member name="T:Fursion_CSharpTools.Tools.FDebug">
             <summary>

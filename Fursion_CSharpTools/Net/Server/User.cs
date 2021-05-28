@@ -13,13 +13,9 @@ namespace Fursion_CSharpTools.Net.Server
         public string ApplicationID { get; set; }
         public void Loadinginfo()
         {
-
+            Role.Implement();
         }
         public T Role;
 
-        protected void Implement()
-        {
-
-        }
     }
 }
