@@ -11,33 +11,56 @@ namespace Fursion_CSharpTools.Tools
     /// </summary>
     public static class DataEncryption
     {
-        public static byte[] AesEncrypt(string text)
+        public static byte[] AesEncrypt(string text, string Paw, string salt)
         {
-            byte[] encryped;
-            using (Aes myAes = Aes.Create())
+            byte[] encrypted;
+            using (AesManaged myAes = new AesManaged())
             {
-                //encryped = AESEncryption.EncryptStringToBytes_Aes(text, MyAes.Key, MyAes.IV);
-                byte[] encrypted = AESEncryption.EncryptStringToBytes_Aes(text, myAes.Key, myAes.IV);
-                Console.WriteLine("key is {0}", BitConverter.ToString(myAes.Key));
-                Console.WriteLine("IV is {0}",BitConverter.ToString(myAes.IV));
-                // Decrypt the bytes to a string.
-                string roundtrip = AESEncryption.DecryptStringFromBytes_Aes(encrypted, myAes.Key, myAes.IV);
+                byte[] salt1 = Encoding.UTF8.GetBytes(salt);
+                myAes.BlockSize = myAes.LegalBlockSizes[0].MaxSize;
+                myAes.KeySize = myAes.LegalKeySizes[0].MaxSize;
+                myAes.Key = GetAesKey(myAes.KeySize / 8, salt1, Paw);
+                myAes.IV = GetAesKey(myAes.BlockSize / 8, salt1, salt);
+                encrypted = AESEncryption.EncryptStringToBytes_Aes(text, myAes.Key, myAes.IV);
 
-                //Display the original data and the decrypted data.
-                Console.WriteLine("Original:   {0}", text);
-                Console.WriteLine("Round Trip: {0}", roundtrip);
-                return encrypted;
             }
-            
+            return encrypted;
         }
-        public static string AesDecrypt(byte[] d)
+        /// <summary>
+        /// 派生指定长度的密钥
+        /// </summary>
+        /// <param name="Size"></param>
+        /// <param name="salt1"></param>
+        /// <param name="Pwd"></param>
+        /// <returns></returns>
+        public static byte[] GetAesKey(int Size, byte[] salt1, string Pwd)
+        {
+            byte[] Aeskey;
+            using (Rfc2898DeriveBytes Rfc = new Rfc2898DeriveBytes(Pwd, salt1))
+            {
+                Aeskey = Rfc.GetBytes(Size);
+            }
+            return Aeskey;
+
+        }
+        public static string AesDecrypt(byte[] d, string Paw, string salt)
         {
             string text;
-            using (Aes MyAes = Aes.Create())
+            using (AesManaged myAes = new AesManaged())
             {
-                text = AESEncryption.DecryptStringFromBytes_Aes(d, MyAes.Key, MyAes.IV);
+                byte[] salt1 = Encoding.UTF8.GetBytes(salt);
+                myAes.BlockSize = myAes.LegalBlockSizes[0].MaxSize;
+                myAes.KeySize = myAes.LegalKeySizes[0].MaxSize;
+                myAes.Key = GetAesKey(myAes.KeySize / 8, salt1, Paw);
+                myAes.IV = GetAesKey(myAes.BlockSize / 8, salt1, salt);
+                text = AESEncryption.DecryptStringFromBytes_Aes(d, myAes.Key, myAes.IV);
             }
             return text;
+        }
+        public static byte[] AesDeCode(byte[] key)
+        {
+
+            return null;
         }
     }
     /// <summary>

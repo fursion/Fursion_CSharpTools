@@ -273,6 +273,15 @@
             数据加密工具
             </summary>
         </member>
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.GetAesKey(System.Int32,System.Byte[],System.String)">
+            <summary>
+            派生指定长度的密钥
+            </summary>
+            <param name="Size"></param>
+            <param name="salt1"></param>
+            <param name="Pwd"></param>
+            <returns></returns>
+        </member>
         <member name="T:Fursion_CSharpTools.Tools.AESEncryption">
             <summary>
             AES算法加密
