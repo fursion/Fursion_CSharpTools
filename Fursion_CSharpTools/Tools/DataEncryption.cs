@@ -11,6 +11,27 @@ namespace Fursion_CSharpTools.Tools
     /// </summary>
     public static class DataEncryption
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>返回加密后的数据，密钥，偏移量</returns>
+        public static Tuple<byte[], byte[], byte[]> RandomAesEncrypt(string file)
+        {
+            byte[] encrypted;
+            byte[] Key, IV;
+            using (AesManaged aes = new AesManaged())
+            {
+
+                aes.BlockSize = aes.LegalBlockSizes[0].MaxSize;
+                aes.KeySize = aes.LegalKeySizes[0].MaxSize;
+                aes.GenerateKey();
+                aes.GenerateIV();
+                encrypted = EncryptStringToBytes_Aes(file, aes.Key, aes.IV);
+                Key = aes.Key;
+                IV = aes.IV;
+            }
+            return new Tuple<byte[], byte[], byte[]>(encrypted, Key, IV);
+        }
         public static byte[] AesEncrypt(string text, string Paw, string salt)
         {
             byte[] encrypted;
@@ -21,8 +42,7 @@ namespace Fursion_CSharpTools.Tools
                 myAes.KeySize = myAes.LegalKeySizes[0].MaxSize;
                 myAes.Key = GetAesKey(myAes.KeySize / 8, salt1, Paw);
                 myAes.IV = GetAesKey(myAes.BlockSize / 8, salt1, salt);
-                encrypted = AESEncryption.EncryptStringToBytes_Aes(text, myAes.Key, myAes.IV);
-
+                encrypted = EncryptStringToBytes_Aes(text, myAes.Key, myAes.IV);
             }
             return encrypted;
         }
@@ -43,6 +63,13 @@ namespace Fursion_CSharpTools.Tools
             return Aeskey;
 
         }
+        /// <summary>
+        /// Aes解码
+        /// </summary>
+        /// <param name="d"></param>
+        /// <param name="Paw"></param>
+        /// <param name="salt"></param>
+        /// <returns></returns>
         public static string AesDecrypt(byte[] d, string Paw, string salt)
         {
             string text;
@@ -53,7 +80,7 @@ namespace Fursion_CSharpTools.Tools
                 myAes.KeySize = myAes.LegalKeySizes[0].MaxSize;
                 myAes.Key = GetAesKey(myAes.KeySize / 8, salt1, Paw);
                 myAes.IV = GetAesKey(myAes.BlockSize / 8, salt1, salt);
-                text = AESEncryption.DecryptStringFromBytes_Aes(d, myAes.Key, myAes.IV);
+                text = DecryptStringFromBytes_Aes(d, myAes.Key, myAes.IV);
             }
             return text;
         }
@@ -62,12 +89,6 @@ namespace Fursion_CSharpTools.Tools
 
             return null;
         }
-    }
-    /// <summary>
-    /// AES算法加密
-    /// </summary>
-    class AESEncryption
-    {
         /// <summary>
         /// 采用SHA256的散列加密，不可逆。
         /// </summary>
@@ -75,18 +96,24 @@ namespace Fursion_CSharpTools.Tools
         /// <returns></returns>
         public static string SHACode(string Vaule)
         {
-            SHA256 sHA256 = SHA256.Create();
-            byte[] md = sHA256.ComputeHash(Encoding.UTF8.GetBytes(Vaule));
-            sHA256.Clear();
-            sHA256.Dispose();
+            byte[] md;
+            using (SHA256 sHA256 = SHA256.Create())
+            {
+                md = sHA256.ComputeHash(Encoding.UTF8.GetBytes(Vaule));
+                sHA256.Clear();
+                sHA256.Dispose();
+            }
             return Convert.ToBase64String(md);
         }
         public static byte[] SHA256Code(string Vaule)
         {
-            SHA256 sHA256 = SHA256.Create();
-            byte[] md = sHA256.ComputeHash(Encoding.UTF8.GetBytes(Vaule));
-            sHA256.Clear();
-            sHA256.Dispose();
+            byte[] md;
+            using (SHA256 sHA256 = SHA256.Create())
+            {
+                md = sHA256.ComputeHash(Encoding.UTF8.GetBytes(Vaule));
+                sHA256.Clear();
+                sHA256.Dispose();
+            }
             return md;
         }
         public static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
@@ -101,7 +128,7 @@ namespace Fursion_CSharpTools.Tools
 
             // Create an Aes object
             // with the specified key and IV.
-            using (Aes aesAlg = Aes.Create())
+            using (AesManaged aesAlg = new AesManaged())
             {
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
@@ -122,6 +149,7 @@ namespace Fursion_CSharpTools.Tools
                         encrypted = msEncrypt.ToArray();
                     }
                 }
+                Console.WriteLine(aesAlg.Mode);
             }
 
             // Return the encrypted bytes from the memory stream.
@@ -143,7 +171,7 @@ namespace Fursion_CSharpTools.Tools
 
             // Create an Aes object
             // with the specified key and IV.
-            using (Aes aesAlg = Aes.Create())
+            using (AesManaged aesAlg = new AesManaged())
             {
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
@@ -158,9 +186,6 @@ namespace Fursion_CSharpTools.Tools
                     {
                         using (StreamReader srDecrypt = new StreamReader(csDecrypt))
                         {
-
-                            // Read the decrypted bytes from the decrypting stream
-                            // and place them in a string.
                             plaintext = srDecrypt.ReadToEnd();
                         }
                     }

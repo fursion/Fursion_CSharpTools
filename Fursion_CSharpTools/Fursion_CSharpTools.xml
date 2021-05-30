@@ -273,6 +273,12 @@
             数据加密工具
             </summary>
         </member>
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.RandomAesEncrypt(System.String)">
+            <summary>
+            
+            </summary>
+            <returns>返回加密后的数据，密钥，偏移量</returns>
+        </member>
         <member name="M:Fursion_CSharpTools.Tools.DataEncryption.GetAesKey(System.Int32,System.Byte[],System.String)">
             <summary>
             派生指定长度的密钥
@@ -282,12 +288,16 @@
             <param name="Pwd"></param>
             <returns></returns>
         </member>
-        <member name="T:Fursion_CSharpTools.Tools.AESEncryption">
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.AesDecrypt(System.Byte[],System.String,System.String)">
             <summary>
-            AES算法加密
+            Aes解码
             </summary>
+            <param name="d"></param>
+            <param name="Paw"></param>
+            <param name="salt"></param>
+            <returns></returns>
         </member>
-        <member name="M:Fursion_CSharpTools.Tools.AESEncryption.SHACode(System.String)">
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.SHACode(System.String)">
             <summary>
             采用SHA256的散列加密，不可逆。
             </summary>
