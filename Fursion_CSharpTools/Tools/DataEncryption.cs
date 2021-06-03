@@ -32,6 +32,42 @@ namespace Fursion_CSharpTools.Tools
             }
             return new Tuple<byte[], byte[], byte[]>(encrypted, Key, IV);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>file key iv</returns>
+        public static Tuple<byte[], byte[], byte[]> RandomAesEncrypt(byte[] file)
+        {
+            byte[] encrypted;
+            byte[] Key, IV;
+ 
+            using (AesManaged aes = new AesManaged())
+            {
+
+                aes.BlockSize = aes.LegalBlockSizes[0].MaxSize;
+                aes.KeySize = aes.LegalKeySizes[0].MaxSize;
+                aes.GenerateKey();
+                aes.GenerateIV();
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+              
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                       
+                        csEncrypt.Write(file, 0, file.Length);
+                        csEncrypt.FlushFinalBlock();
+                    }
+                    encrypted = msEncrypt.ToArray();
+                    //Console.WriteLine(Convert.ToBase64String(encrypted).Length);
+                    //Console.WriteLine(Convert.FromBase64String(Convert.ToBase64String(encrypted)).Length);
+                }
+                Key = aes.Key;
+                IV = aes.IV;
+            }
+            return new Tuple<byte[], byte[], byte[]>(encrypted, Key, IV);
+        }
         public static byte[] AesEncrypt(string text, string Paw, string salt)
         {
             byte[] encrypted;
@@ -188,6 +224,41 @@ namespace Fursion_CSharpTools.Tools
                         {
                             plaintext = srDecrypt.ReadToEnd();
                         }
+                    }
+                }
+            }
+            return plaintext;
+        }
+        public static byte[] DecryptBytesFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
+        {
+            // Check arguments.
+            if (cipherText == null || cipherText.Length <= 0)
+                throw new ArgumentNullException("cipherText");
+            if (Key == null || Key.Length <= 0)
+                throw new ArgumentNullException("Key");
+            if (IV == null || IV.Length <= 0)
+                throw new ArgumentNullException("IV");
+            byte[] plaintext;
+            using (AesManaged aesAlg = new AesManaged())
+            {
+                aesAlg.Key = Key;
+                aesAlg.IV = IV;
+                long readlen;
+                long totlen = 0;
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+                MemoryStream ins = new MemoryStream(cipherText);
+                readlen = ins.Length;
+                using (MemoryStream msDecrypt = new MemoryStream(cipherText))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        Console.WriteLine(csDecrypt.CanRead);
+                        byte[] buffer = new byte[cipherText.Length];
+                        int len=csDecrypt.Read(buffer,0,buffer.Length);
+
+                        plaintext = new byte[len];
+                        Array.Copy(buffer, 0, plaintext, 0, len);
+                        Console.WriteLine("解码 "+len); 
                     }
                 }
             }

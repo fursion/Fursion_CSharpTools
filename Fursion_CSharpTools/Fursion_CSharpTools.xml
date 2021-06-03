@@ -213,6 +213,18 @@
             工具类
             </summary>
         </member>
+        <member name="M:Fursion_CSharpTools.CSharpTools.CreateUUID">
+            <summary>
+            创建唯一编号
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.CSharpTools.CreateTimeStamp">
+            <summary>
+            获取时间戳
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Fursion_CSharpTools.CSharpTools.PrintByteArray(System.Byte[])">
             <summary>
             打印·Byte数组
@@ -279,6 +291,13 @@
             </summary>
             <returns>返回加密后的数据，密钥，偏移量</returns>
         </member>
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.RandomAesEncrypt(System.Byte[])">
+            <summary>
+            
+            </summary>
+            <param name="file"></param>
+            <returns>file key iv</returns>
+        </member>
         <member name="M:Fursion_CSharpTools.Tools.DataEncryption.GetAesKey(System.Int32,System.Byte[],System.String)">
             <summary>
             派生指定长度的密钥
@@ -313,6 +332,41 @@
             <summary>
             输出日期和时间
             </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.F_IO.ReadTextfile(System.String)">
+            <summary>
+            读取文本文件
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.F_IO.ReadBytefile(System.String)">
+            <summary>
+            读取二进制文件
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.F_IO.CreateAndWrite(System.String,System.Byte[])">
+            <summary>
+            创建文件并写入数据
+            </summary>
+            <param name="path"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.F_IO.CreateDirectory(System.String)">
+            <summary>
+            创建目录
+            </summary>
+            <param name="TargetDirectory"></param>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.F_IO.SearchDirectory(System.String,System.String)">
+            <summary>
+            检索指定目录下给定类型的文件
+            </summary>
+            <param name="TargetDirectory">路径</param>
+            <param name="searchPattern">文件扩展名 列 .xlsx  .docx * ?</param>
+            <returns></returns>
         </member>
     </members>
 </doc>

@@ -28,6 +28,28 @@ namespace Fursion_CSharpTools
     /// </summary>
     public static class CSharpTools
     {
+        private static long LastUUID = 0;
+        /// <summary>
+        /// 创建唯一编号
+        /// </summary>
+        /// <returns></returns>
+        public static string CreateUUID()
+        {
+            long NewUUID = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+            if (NewUUID <= LastUUID)
+                NewUUID = LastUUID + 1;
+            LastUUID = NewUUID;
+            return NewUUID.ToString();
+        }
+        /// <summary>
+        /// 获取时间戳
+        /// </summary>
+        /// <returns></returns>
+        public static string CreateTimeStamp()
+        {
+            long NewStamp = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmmssfff"));
+            return NewStamp.ToString();
+        }
         /// <summary>
         /// 打印·Byte数组
         /// </summary>
