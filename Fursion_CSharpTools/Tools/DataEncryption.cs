@@ -12,7 +12,7 @@ namespace Fursion_CSharpTools.Tools
     public static class DataEncryption
     {
         /// <summary>
-        /// 
+        /// 对字符串进行加密,文本文件
         /// </summary>
         /// <returns>返回加密后的数据，密钥，偏移量</returns>
         public static Tuple<byte[], byte[], byte[]> RandomAesEncrypt(string file)
@@ -33,15 +33,15 @@ namespace Fursion_CSharpTools.Tools
             return new Tuple<byte[], byte[], byte[]>(encrypted, Key, IV);
         }
         /// <summary>
-        /// 
+        /// 对Byte[]进行加密，
         /// </summary>
-        /// <param name="file"></param>
-        /// <returns>file key iv</returns>
+        /// <param name="file">明文Byte[]流</param>
+        /// <returns>EncryptedByte[] key iv</returns>
         public static Tuple<byte[], byte[], byte[]> RandomAesEncrypt(byte[] file)
         {
             byte[] encrypted;
             byte[] Key, IV;
- 
+
             using (AesManaged aes = new AesManaged())
             {
 
@@ -50,37 +50,20 @@ namespace Fursion_CSharpTools.Tools
                 aes.GenerateKey();
                 aes.GenerateIV();
                 ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-              
                 using (MemoryStream msEncrypt = new MemoryStream())
                 {
                     using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                     {
-                       
+
                         csEncrypt.Write(file, 0, file.Length);
                         csEncrypt.FlushFinalBlock();
                     }
-                    encrypted = msEncrypt.ToArray();
-                    //Console.WriteLine(Convert.ToBase64String(encrypted).Length);
-                    //Console.WriteLine(Convert.FromBase64String(Convert.ToBase64String(encrypted)).Length);
+                    encrypted = msEncrypt.ToArray(); ;
                 }
                 Key = aes.Key;
                 IV = aes.IV;
             }
             return new Tuple<byte[], byte[], byte[]>(encrypted, Key, IV);
-        }
-        public static byte[] AesEncrypt(string text, string Paw, string salt)
-        {
-            byte[] encrypted;
-            using (AesManaged myAes = new AesManaged())
-            {
-                byte[] salt1 = Encoding.UTF8.GetBytes(salt);
-                myAes.BlockSize = myAes.LegalBlockSizes[0].MaxSize;
-                myAes.KeySize = myAes.LegalKeySizes[0].MaxSize;
-                myAes.Key = GetAesKey(myAes.KeySize / 8, salt1, Paw);
-                myAes.IV = GetAesKey(myAes.BlockSize / 8, salt1, salt);
-                encrypted = EncryptStringToBytes_Aes(text, myAes.Key, myAes.IV);
-            }
-            return encrypted;
         }
         /// <summary>
         /// 派生指定长度的密钥
@@ -100,70 +83,58 @@ namespace Fursion_CSharpTools.Tools
 
         }
         /// <summary>
-        /// Aes解码
-        /// </summary>
-        /// <param name="d"></param>
-        /// <param name="Paw"></param>
-        /// <param name="salt"></param>
-        /// <returns></returns>
-        public static string AesDecrypt(byte[] d, string Paw, string salt)
-        {
-            string text;
-            using (AesManaged myAes = new AesManaged())
-            {
-                byte[] salt1 = Encoding.UTF8.GetBytes(salt);
-                myAes.BlockSize = myAes.LegalBlockSizes[0].MaxSize;
-                myAes.KeySize = myAes.LegalKeySizes[0].MaxSize;
-                myAes.Key = GetAesKey(myAes.KeySize / 8, salt1, Paw);
-                myAes.IV = GetAesKey(myAes.BlockSize / 8, salt1, salt);
-                text = DecryptStringFromBytes_Aes(d, myAes.Key, myAes.IV);
-            }
-            return text;
-        }
-        public static byte[] AesDeCode(byte[] key)
-        {
-
-            return null;
-        }
-        /// <summary>
-        /// 采用SHA256的散列加密，不可逆。
+        /// 采用SHA256的散列哈希加密，不可逆。返回字符串
         /// </summary>
         /// <param name="Vaule"></param>
         /// <returns></returns>
-        public static string SHACode(string Vaule)
+        public static string SHA256HashString(string Vaule)
         {
             byte[] md;
             using (SHA256 sHA256 = SHA256.Create())
             {
                 md = sHA256.ComputeHash(Encoding.UTF8.GetBytes(Vaule));
-                sHA256.Clear();
-                sHA256.Dispose();
             }
             return Convert.ToBase64String(md);
         }
-        public static byte[] SHA256Code(string Vaule)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Vaule"></param>
+        /// <returns></returns>
+        public static byte[] SHA256HashBytes(this string Vaule)
         {
             byte[] md;
             using (SHA256 sHA256 = SHA256.Create())
             {
                 md = sHA256.ComputeHash(Encoding.UTF8.GetBytes(Vaule));
-                sHA256.Clear();
-                sHA256.Dispose();
             }
             return md;
         }
+        /// <summary>
+        /// 对字符串进行加密
+        /// </summary>
+        /// <param name="plainText">明文</param>
+        /// <param name="Key">密钥</param>
+        /// <param name="IV">偏移量</param>
+        /// <returns>加密得到的Byte[]</returns>
         public static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
         {
             if (plainText == null || plainText.Length <= 0)
-                throw new ArgumentNullException("plainText");
+            {
+                FDebug.Log("密文无效，无法加密");
+                return null;
+            }
             if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException("Key");
+            {
+                FDebug.Log("密钥无效，无法加密");
+                return null;
+            }
             if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("IV");
+            {
+                FDebug.Log("偏移量无效，无法加密");
+                return null;
+            }
             byte[] encrypted;
-
-            // Create an Aes object
-            // with the specified key and IV.
             using (AesManaged aesAlg = new AesManaged())
             {
                 aesAlg.Key = Key;
@@ -187,36 +158,40 @@ namespace Fursion_CSharpTools.Tools
                 }
                 Console.WriteLine(aesAlg.Mode);
             }
-
-            // Return the encrypted bytes from the memory stream.
             return encrypted;
         }
-        public static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
+        /// <summary>
+        /// 将字符串加密得到的Byte[]解密并转化为字符串
+        /// 默认UTF8编码
+        /// </summary>
+        /// <param name="EncryptedBytes">密文</param>
+        /// <param name="Key">密钥</param>
+        /// <param name="IV">偏移量</param>
+        /// <returns>解密得到的字符串</returns>
+        public static string DecryptStringFromBytes_Aes(byte[] EncryptedBytes, byte[] Key, byte[] IV)
         {
-            // Check arguments.
-            if (cipherText == null || cipherText.Length <= 0)
-                throw new ArgumentNullException("cipherText");
+            if (EncryptedBytes == null || EncryptedBytes.Length <= 0)
+            {
+                FDebug.Log("密文无效，无法解密");
+                return null;
+            }
             if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException("Key");
+            {
+                FDebug.Log("密钥无效，无法解密");
+                return null;
+            }
             if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("IV");
-
-            // Declare the string used to hold
-            // the decrypted text.
+            {
+                FDebug.Log("偏移量无效，无法解密");
+                return null;
+            }
             string plaintext = null;
-
-            // Create an Aes object
-            // with the specified key and IV.
             using (AesManaged aesAlg = new AesManaged())
             {
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
-
-                // Create a decryptor to perform the stream transform.
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-                // Create the streams used for decryption.
-                using (MemoryStream msDecrypt = new MemoryStream(cipherText))
+                using (MemoryStream msDecrypt = new MemoryStream(EncryptedBytes))
                 {
                     using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
@@ -229,16 +204,31 @@ namespace Fursion_CSharpTools.Tools
             }
             return plaintext;
         }
-        public static byte[] DecryptBytesFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
+        /// <summary>
+        /// 解密经过加密的Byte[]流文件
+        /// </summary>
+        /// <param name="EncryptedBytes">密文</param>
+        /// <param name="Key">密钥</param>
+        /// <param name="IV">加密偏移量</param>
+        /// <returns>解密后的Byte[]流</returns>
+        public static byte[] DecryptBytesFromBytes_Aes(byte[] EncryptedBytes, byte[] Key, byte[] IV)
         {
-            // Check arguments.
-            if (cipherText == null || cipherText.Length <= 0)
-                throw new ArgumentNullException("cipherText");
+            if (EncryptedBytes == null || EncryptedBytes.Length <= 0)
+            {
+                FDebug.Log("密文无效，无法解密");
+                return null;
+            }
             if (Key == null || Key.Length <= 0)
-                throw new ArgumentNullException("Key");
+            {
+                FDebug.Log("密钥无效，无法解密");
+                return null;
+            }
             if (IV == null || IV.Length <= 0)
-                throw new ArgumentNullException("IV");
-            byte[] plaintext;
+            {
+                FDebug.Log("偏移量无效，无法解密");
+                return null;
+            }
+            byte[] DecrypteBytes;
             using (AesManaged aesAlg = new AesManaged())
             {
                 aesAlg.Key = Key;
@@ -246,23 +236,20 @@ namespace Fursion_CSharpTools.Tools
                 long readlen;
                 long totlen = 0;
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-                MemoryStream ins = new MemoryStream(cipherText);
+                MemoryStream ins = new MemoryStream(EncryptedBytes);
                 readlen = ins.Length;
-                using (MemoryStream msDecrypt = new MemoryStream(cipherText))
+                using (MemoryStream msDecrypt = new MemoryStream(EncryptedBytes))
                 {
                     using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {
-                        Console.WriteLine(csDecrypt.CanRead);
-                        byte[] buffer = new byte[cipherText.Length];
-                        int len=csDecrypt.Read(buffer,0,buffer.Length);
-
-                        plaintext = new byte[len];
-                        Array.Copy(buffer, 0, plaintext, 0, len);
-                        Console.WriteLine("解码 "+len); 
+                        byte[] buffer = new byte[EncryptedBytes.Length];
+                        int len = csDecrypt.Read(buffer, 0, buffer.Length);
+                        DecrypteBytes = new byte[len];
+                        Array.Copy(buffer, 0, DecrypteBytes, 0, len);
                     }
                 }
             }
-            return plaintext;
+            return DecrypteBytes;
         }
 
     }
