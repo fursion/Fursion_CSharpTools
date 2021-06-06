@@ -36,6 +36,16 @@
             <param name="connect"></param>
             <returns></returns>
         </member>
+        <member name="T:Fursion_CSharpTools.Net.Public.NetDataProcessing">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Fursion_CSharpTools.Net.Public.DataProcessJod">
+            <summary>
+            数据处理作业实体，适用于服务端
+            </summary>
+        </member>
         <member name="T:Fursion_CSharpTools.Net.Server.Service_IOSystem">
             <summary>
             服务器端的IO操作类，包含远程数据库和本地文存储
@@ -285,20 +295,28 @@
             数据加密工具
             </summary>
         </member>
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.AesEncode(System.Byte[],System.String)">
+            <summary>
+            解密由Aes算法加密的Byte[]
+            </summary>
+            <param name="file"></param>
+            <param name="Key"></param>
+            <returns>返回一个解密后的Byte[]</returns>
+        </member>
         <member name="M:Fursion_CSharpTools.Tools.DataEncryption.RandomAesEncrypt(System.String)">
             <summary>
-            
+            对字符串进行加密,文本文件
             </summary>
             <returns>返回加密后的数据，密钥，偏移量</returns>
         </member>
         <member name="M:Fursion_CSharpTools.Tools.DataEncryption.RandomAesEncrypt(System.Byte[])">
             <summary>
-            
+            对Byte[]进行加密，
             </summary>
-            <param name="file"></param>
-            <returns>file key iv</returns>
+            <param name="file">明文Byte[]流</param>
+            <returns>EncryptedByte[] key iv</returns>
         </member>
-        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.GetAesKey(System.Int32,System.Byte[],System.String)">
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.GetAesKey(System.Int32,System.String,System.String)">
             <summary>
             派生指定长度的密钥
             </summary>
@@ -307,21 +325,56 @@
             <param name="Pwd"></param>
             <returns></returns>
         </member>
-        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.AesDecrypt(System.Byte[],System.String,System.String)">
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.GetAesIV(System.Int32,System.String,System.String)">
             <summary>
-            Aes解码
+            获取加密IV
             </summary>
-            <param name="d"></param>
-            <param name="Paw"></param>
-            <param name="salt"></param>
+            <param name="size"></param>
+            <param name="saltstring"></param>
+            <param name="pwd"></param>
             <returns></returns>
         </member>
-        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.SHACode(System.String)">
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.SHA256HashString(System.String)">
             <summary>
-            采用SHA256的散列加密，不可逆。
+            采用SHA256的散列哈希加密，不可逆。返回字符串
             </summary>
             <param name="Vaule"></param>
             <returns></returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.SHA256HashBytes(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="Vaule"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.EncryptStringToBytes_Aes(System.String,System.Byte[],System.Byte[])">
+            <summary>
+            对字符串进行加密
+            </summary>
+            <param name="plainText">明文</param>
+            <param name="Key">密钥</param>
+            <param name="IV">偏移量</param>
+            <returns>加密得到的Byte[]</returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.DecryptStringFromBytes_Aes(System.Byte[],System.Byte[],System.Byte[])">
+            <summary>
+            将字符串加密得到的Byte[]解密并转化为字符串
+            默认UTF8编码
+            </summary>
+            <param name="EncryptedBytes">密文</param>
+            <param name="Key">密钥</param>
+            <param name="IV">偏移量</param>
+            <returns>解密得到的字符串</returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.DataEncryption.DecryptBytesFromBytes_Aes(System.Byte[],System.Byte[],System.Byte[])">
+            <summary>
+            解密经过加密的Byte[]流文件
+            </summary>
+            <param name="EncryptedBytes">密文</param>
+            <param name="Key">密钥</param>
+            <param name="IV">加密偏移量</param>
+            <returns>解密后的Byte[]流</returns>
         </member>
         <member name="T:Fursion_CSharpTools.Tools.FDebug">
             <summary>
@@ -366,6 +419,19 @@
             </summary>
             <param name="TargetDirectory">路径</param>
             <param name="searchPattern">文件扩展名 列 .xlsx  .docx * ?</param>
+            <returns></returns>
+        </member>
+        <member name="T:Fursion_CSharpTools.Tools.JsonTools">
+            <summary>
+            Json工具类
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Tools.JsonTools.JsonDeserializer``1(System.String)">
+            <summary>
+            反序列化json字符串
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="JsonString">json字符串</param>
             <returns></returns>
         </member>
     </members>

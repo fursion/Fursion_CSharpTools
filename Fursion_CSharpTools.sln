@@ -5,9 +5,14 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fursion_CSharpTools", "Fursion_CSharpTools\Fursion_CSharpTools.csproj", "{63228069-C989-4F46-976F-71DA15EE364F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServerMain", "..\..\GameServer\GameServerMain\GameServerMain.csproj", "{431B0BAC-9E09-4CB1-9EDE-22CD3401B0B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServerMain", "..\..\GameServer\GameServerMain\GameServerMain.csproj", "{431B0BAC-9E09-4CB1-9EDE-22CD3401B0B9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolTools", "..\ProtocolTools\ProtocolTools.csproj", "{6E34C47E-53A5-4DD7-BCA1-37D7671A581F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1071694C-A742-49CA-A77C-06AA1A19B513}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -137,7 +137,7 @@ namespace Fursion_CSharpTools.Net.Server
             catch (Exception e)
             {
                 FDebug.Log(connect.GetAddress() + " :连接异常 已经断开");
-                FDebug.Log(e.Message + "  From:  ServerMain.AsyncReceiveCb");
+                FDebug.Log(e.Message + "  from:  ServerMain.AsyncReceiveCb");
                 connect.Close();
             }
         }
@@ -257,15 +257,9 @@ namespace Fursion_CSharpTools.Net.Server
             ///待完善
             FDebug.Log("接收完成共{0}byte数据 From:{1}", bs.Length, connect.GetAddress());
             SocketCall?.Invoke(bs);
+
+            //数据解密
            // IPC.GetInstance().InComing_DATA(bs, connect);
-            try
-            {
-                connect.Send(ProtocolTool.PackagingNetPackag(ProtocolBufType.RespondLogin, bs));
-            }
-            catch
-            {
-                FDebug.Log("发送失败");
-            }
         }
     }
 }

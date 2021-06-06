@@ -56,6 +56,8 @@ namespace Fursion_CSharpTools
         /// <param name="bs"></param>
         public static void PrintByteArray(this byte[] bs)
         {
+            if (bs == null)
+                return;
             string str = "";
             foreach (var item in bs)
             {
@@ -115,7 +117,7 @@ namespace Fursion_CSharpTools
         /// <summary>
         /// 静态实例
         /// </summary>
-        public static T instance;
+        private static T instance;
         /// <summary>
         /// 获取实例
         /// </summary>

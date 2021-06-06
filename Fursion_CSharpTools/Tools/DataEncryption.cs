@@ -6,11 +6,77 @@ using System.Text;
 
 namespace Fursion_CSharpTools.Tools
 {
+    public class EncryptHelp : IDisposable
+    {
+        bool disposed = false;
+        public readonly string Salt1 = "qwertyuioplkjhgfdsamnbvcxz";
+        public readonly string Salt2 = "zxcvbnmlkjhgfdsaqwertyuiop";
+        public readonly byte[] IV1 = new byte[4] { 0x12, 0x34, 0x45, 0xa3 };
+        public readonly byte[] IV2 = new byte[4] { 0x72, 0x37, 0x68, 0xa3 };
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+            if (disposing)
+            {
+                // Free any other managed objects here.
+            }
+            disposed = true;
+        }
+    }
     /// <summary>
     /// 数据加密工具
     /// </summary>
     public static class DataEncryption
     {
+        /// <summary>
+        /// 解密由Aes算法加密的Byte[]
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="Key"></param>
+        /// <returns>返回一个解密后的Byte[]</returns>
+        public static byte[] AesEncode(this byte[] file, string Key)
+        {
+            byte[] encryptedByte;
+            using (AesManaged aes = new AesManaged())
+            {
+                using (EncryptHelp help = new EncryptHelp())
+                {
+                    aes.BlockSize = aes.LegalBlockSizes[0].MaxSize;
+                    aes.KeySize = aes.LegalKeySizes[0].MaxSize;
+                    aes.IV = GetAesKey(aes.BlockSize / 8, help.Salt1, Key.SHA256HashString());
+                    aes.Key = GetAesKey(aes.KeySize / 8, help.Salt2, Key.SHA256HashString());
+                    aes.IV.PrintByteArray();
+                    aes.Key.PrintByteArray();
+                    encryptedByte = EncryptBytesToBytes_Aes(file, aes.Key, aes.IV);
+                }
+
+            }
+            return encryptedByte;
+        }
+        public static byte[] AesDecode(byte[] Aesfile, string Key)
+        {
+            byte[] DecryptBytes;
+            using (AesManaged aes = new AesManaged())
+            {
+                using (EncryptHelp help = new EncryptHelp())
+                {
+                    aes.BlockSize = aes.LegalBlockSizes[0].MaxSize;
+                    aes.KeySize = aes.LegalKeySizes[0].MaxSize;
+                    aes.IV = GetAesKey(aes.BlockSize / 8, help.Salt1, Key.SHA256HashString());
+                    aes.Key = GetAesKey(aes.KeySize / 8, help.Salt2, Key.SHA256HashString());
+                    aes.IV.PrintByteArray();
+                    aes.Key.PrintByteArray();
+                    DecryptBytes = DecryptBytesFromBytes_Aes(Aesfile, aes.Key, aes.IV);
+                }
+            }
+            return DecryptBytes;
+        }
         /// <summary>
         /// 对字符串进行加密,文本文件
         /// </summary>
@@ -41,10 +107,8 @@ namespace Fursion_CSharpTools.Tools
         {
             byte[] encrypted;
             byte[] Key, IV;
-
             using (AesManaged aes = new AesManaged())
             {
-
                 aes.BlockSize = aes.LegalBlockSizes[0].MaxSize;
                 aes.KeySize = aes.LegalKeySizes[0].MaxSize;
                 aes.GenerateKey();
@@ -72,10 +136,11 @@ namespace Fursion_CSharpTools.Tools
         /// <param name="salt1"></param>
         /// <param name="Pwd"></param>
         /// <returns></returns>
-        public static byte[] GetAesKey(int Size, byte[] salt1, string Pwd)
+        public static byte[] GetAesKey(int Size, string saltstring, string Pwd)
         {
             byte[] Aeskey;
-            using (Rfc2898DeriveBytes Rfc = new Rfc2898DeriveBytes(Pwd, salt1))
+            var saltByte = saltstring.SHA256HashBytes();
+            using (Rfc2898DeriveBytes Rfc = new Rfc2898DeriveBytes(Pwd, saltByte))
             {
                 Aeskey = Rfc.GetBytes(Size);
             }
@@ -83,11 +148,28 @@ namespace Fursion_CSharpTools.Tools
 
         }
         /// <summary>
+        /// 获取加密IV
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="saltstring"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
+        public static byte[] GetAesIV(int size, string saltstring, string pwd)
+        {
+            byte[] IV;
+            var saltByte = saltstring.SHA256HashBytes();
+            using (Rfc2898DeriveBytes Rfc = new Rfc2898DeriveBytes(pwd, saltByte))
+            {
+                IV = Rfc.GetBytes(size);
+            }
+            return IV;
+        }
+        /// <summary>
         /// 采用SHA256的散列哈希加密，不可逆。返回字符串
         /// </summary>
         /// <param name="Vaule"></param>
         /// <returns></returns>
-        public static string SHA256HashString(string Vaule)
+        public static string SHA256HashString(this string Vaule)
         {
             byte[] md;
             using (SHA256 sHA256 = SHA256.Create())
@@ -109,6 +191,42 @@ namespace Fursion_CSharpTools.Tools
                 md = sHA256.ComputeHash(Encoding.UTF8.GetBytes(Vaule));
             }
             return md;
+        }
+        public static byte[] EncryptBytesToBytes_Aes(byte[] plainBytes, byte[] Key, byte[] IV)
+        {
+            if (plainBytes == null || plainBytes.Length <= 0)
+            {
+                FDebug.Log("密文无效，无法加密");
+                return null;
+            }
+            if (Key == null || Key.Length <= 0)
+            {
+                FDebug.Log("密钥无效，无法加密");
+                return null;
+            }
+            if (IV == null || IV.Length <= 0)
+            {
+                FDebug.Log("偏移量无效，无法加密");
+                return null;
+            }
+            byte[] encrypted;
+            using (AesManaged aes = new AesManaged())
+            {
+                aes.Key = Key;
+                aes.IV = IV;
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+
+                        csEncrypt.Write(plainBytes, 0, plainBytes.Length);
+                        csEncrypt.FlushFinalBlock();
+                    }
+                    encrypted = msEncrypt.ToArray(); ;
+                }
+            }
+            return encrypted;
         }
         /// <summary>
         /// 对字符串进行加密
@@ -228,24 +346,31 @@ namespace Fursion_CSharpTools.Tools
                 FDebug.Log("偏移量无效，无法解密");
                 return null;
             }
-            byte[] DecrypteBytes;
+            byte[] DecrypteBytes = null;
             using (AesManaged aesAlg = new AesManaged())
             {
                 aesAlg.Key = Key;
                 aesAlg.IV = IV;
-                long readlen;
-                long totlen = 0;
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-                MemoryStream ins = new MemoryStream(EncryptedBytes);
-                readlen = ins.Length;
-                using (MemoryStream msDecrypt = new MemoryStream(EncryptedBytes))
+                using (MemoryStream outs = new MemoryStream())
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    using (MemoryStream msDecrypt = new MemoryStream(EncryptedBytes))
                     {
-                        byte[] buffer = new byte[EncryptedBytes.Length];
-                        int len = csDecrypt.Read(buffer, 0, buffer.Length);
-                        DecrypteBytes = new byte[len];
-                        Array.Copy(buffer, 0, DecrypteBytes, 0, len);
+                        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                        {
+                            try
+                            {
+                                byte[] buffer = new byte[EncryptedBytes.Length];
+                                int len = csDecrypt.Read(buffer, 0, buffer.Length);//len为解密流中数据的实际可用长度
+                                DecrypteBytes = new byte[len];
+                                Array.Copy(buffer, 0, DecrypteBytes, 0, len);
+                            }
+                            catch (Exception e)
+                            {
+                                FDebug.Log("解码密钥错误 ：" + e.Message);
+                            }
+
+                        }
                     }
                 }
             }
