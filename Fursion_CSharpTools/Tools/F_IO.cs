@@ -34,8 +34,16 @@ namespace Fursion_CSharpTools.Tools
             byte[] data;
             if (File.Exists(path))
             {
-                data = File.ReadAllBytes(path);
-                return data;
+                try
+                {
+                    data = File.ReadAllBytes(path);
+                    return data;
+                }
+                catch(Exception e)
+                {
+                    FDebug.Log(e.Message);
+                    return null;
+                } 
             }
             else FDebug.Log("file {0} not found", path);
             return null;

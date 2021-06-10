@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 using Fursion_CSharpTools.Net.Public;
 using Fursion_CSharpTools.Tools;
 
 namespace Fursion_CSharpTools.Net.Public
 {
-    public delegate void DataProcessJodAction(DataProcessJod jod);
+    public delegate T DataProcessJodAction<T>(DataProcessJod jod);
     /// <summary>
     /// 
     /// </summary>
@@ -27,32 +28,34 @@ namespace Fursion_CSharpTools.Net.Public
     /// <summary>
     /// 数据处理作业实体，适用于服务端
     /// </summary>
-    public struct DataProcessJod : IFuJob, IDisposable
+    public struct DataProcessJod : IDisposable, IJobAsync
     {
-        public DataProcessJodAction action;
+        public DataProcessJodAction<int> action;
+        public AsyncCallback AsyncCallback;
         public bool State;
         public byte[] Data;
         public Connect Connect;
+
+        public IAsyncResult BeginExecute(AsyncCallback asyncCallback, object ob)
+        {
+            return action.BeginInvoke(this, asyncCallback, ob);
+        }
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
         }
-
-        public void Execute(DataProcessJodAction action)
+        public void EndExecute(IAsyncResult result)
         {
-            action?.Invoke(this);
-        }
-        public void Execute(object ob)
-        {
-            action?.Invoke(this);
+            action.EndInvoke(result);
         }
     }
-    public interface IFuJob
+    public interface IJobAsync
     {
-        void Execute(DataProcessJodAction action);
-
+        IAsyncResult BeginExecute(AsyncCallback asyncCallback, object @object);
+        void EndExecute(IAsyncResult result);
     }
+
 
     public class DataProcessing : Singleton<DataProcessing>
     {
@@ -77,6 +80,10 @@ namespace Fursion_CSharpTools.Net.Public
             }
 
         }
+        /// <summary>
+        /// 取出一份数据处理作业
+        /// </summary>
+        /// <returns>作业实体</returns>
         public DataProcessJod GetTobJob()
         {
             try
@@ -92,24 +99,36 @@ namespace Fursion_CSharpTools.Net.Public
         }
         public static void ThreadAction(object self)
         {
-            DataProcessing.GetInstance().ExecuteJob();
+            DataProcessing.GetInstance().ExecuteJobAsync();
         }
-        public void ExecuteJob()
+        public async Task ExecuteJobAsync()
         {
             while (true)
             {
                 if (DataJobQueue.Count <= 0)
                     continue;
-                var job = GetTobJob();
+                DataProcessJod job = GetTobJob();
                 if (job.State)
                 {
-                    job.action = (o) => { FDebug.Log(BitConverter.ToString(o.Data)); };
-                    ThreadPool.QueueUserWorkItem(job.Execute);
-                    job.Dispose();
-                    continue;
+                    job.action = JOBACTION;
+                    job.AsyncCallback = Callback;
+                    Task task = Task.Run(() => {job.action.Invoke(job); });
+                    var followuptask = task.ContinueWith(Callback);
+                    await followuptask;
                 }
-            }
 
+            }
+        }
+        public int JOBACTION(DataProcessJod jod)
+        {
+
+            return 0;
+        }
+        public void Callback(IAsyncResult result)
+        {
+            DataProcessJod jod = (DataProcessJod)result.AsyncState;
+            var value = jod.action.EndInvoke(result);          
+            Console.WriteLine(value);
         }
     }
 

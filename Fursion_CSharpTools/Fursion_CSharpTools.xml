@@ -46,6 +46,12 @@
             数据处理作业实体，适用于服务端
             </summary>
         </member>
+        <member name="M:Fursion_CSharpTools.Net.Public.DataProcessing.GetTobJob">
+            <summary>
+            取出一份数据处理作业
+            </summary>
+            <returns>作业实体</returns>
+        </member>
         <member name="T:Fursion_CSharpTools.Net.Server.Service_IOSystem">
             <summary>
             服务器端的IO操作类，包含远程数据库和本地文存储
