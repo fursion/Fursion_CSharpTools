@@ -56,7 +56,6 @@ namespace Fursion_CSharpTools.Net.Public
         void EndExecute(IAsyncResult result);
     }
 
-
     public class DataProcessing : Singleton<DataProcessing>
     {
         private Queue<DataProcessJod> DataJobQueue;
@@ -97,9 +96,9 @@ namespace Fursion_CSharpTools.Net.Public
                 return new DataProcessJod() { State = false };
             }
         }
-        public static void ThreadAction(object self)
+        public static async void ThreadAction(object self)
         {
-            DataProcessing.GetInstance().ExecuteJobAsync();
+             await DataProcessing.GetInstance().ExecuteJobAsync();
         }
         public async Task ExecuteJobAsync()
         {
@@ -121,14 +120,12 @@ namespace Fursion_CSharpTools.Net.Public
         }
         public int JOBACTION(DataProcessJod jod)
         {
-
+            Console.WriteLine("new job");
             return 0;
         }
         public void Callback(IAsyncResult result)
         {
-            DataProcessJod jod = (DataProcessJod)result.AsyncState;
-            var value = jod.action.EndInvoke(result);          
-            Console.WriteLine(value);
+            Console.WriteLine(Fursion_CSharpTools.CSharpTools.CreateUUID());  
         }
     }
 

@@ -1,15 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using System.Threading;
 using Fursion_CSharpTools;
 using Fursion_CSharpTools.Net.Public;
 using Fursion_CSharpTools.Tools;
+using Fursion_CSharpTools.AsyncJob;
 
 namespace GameServerMain
 {
     class ServiceCommand : Singleton<ServiceCommand>
     {
+        struct Testjob1 : IJobTask
+        {
+            public int i;
+            public void CallBack(object obj)
+            {
+                FDebug.Log("回调 {0}  线程ID：{1}",i*i,Thread.CurrentThread.ManagedThreadId);
+            }
+
+            public void Execute(object obj)
+            {
+                FDebug.Log("{0}   线程ID：{1}", i,Thread.CurrentThread.ManagedThreadId);
+            }
+        }
+        struct TestjobGet1 : IJobTaskGet<int>
+        {
+            public int i;
+            public void CallBack(object obj)
+            {
+                FDebug.Log("回调 {0}  线程ID：{1}", i * i, Thread.CurrentThread.ManagedThreadId);
+            }
+            public int Execute(object obj)
+            {
+                FDebug.Log("执行任务");
+                return Thread.CurrentThread.ManagedThreadId*i;
+            }
+        }
+
         public void CheckCommand()
         {
             string Commend = Console.ReadLine();
@@ -17,8 +45,24 @@ namespace GameServerMain
             {
                 case "Encodefile": Encodefile(); break;
                 case "testjob": Testjob(); break;
-                default: Console.WriteLine(@"Not found this ""{0}"" commend", Commend); break;
+                case "jobtask": JobTest(); break;
+                default: Console.WriteLine(@"Not found this ""{0}"" command", Commend); break;
             }
+        }
+        public async void JobTest()
+        {
+            //for (int i = 0; i < 3000; i++)
+            //{
+            //    Testjob1 testjob = new Testjob1();
+            //    testjob.i = i;
+            //    TaskCore.Run(testjob);
+            //}
+            TestjobGet1 testjobGet1 = new TestjobGet1();
+            testjobGet1.i = 2;
+            var tr= await TaskCore.Run(testjobGet1);
+            Console.WriteLine(tr);
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+
         }
         public void Encodefile()
         {

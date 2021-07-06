@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <Folder Include="ClassTool\" />
-    <Folder Include="Net\UDP\" />
+    <Folder Include="Net\HTTP\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,12 +4,6 @@
         <name>Fursion_CSharpTools</name>
     </assembly>
     <members>
-        <member name="M:Fursion_CSharpTools.Net.Client.Connect_To.SubReceiveCb(System.IAsyncResult)">
-            <summary>
-            增量接收
-            </summary>
-            <param name="ar"></param>
-        </member>
         <member name="T:Fursion_CSharpTools.Net.Public.IPC">
             <summary>
             数据处理中心
@@ -51,6 +45,12 @@
             取出一份数据处理作业
             </summary>
             <returns>作业实体</returns>
+        </member>
+        <member name="M:Fursion_CSharpTools.Net.Client.Connect_To.SubReceiveCb(System.IAsyncResult)">
+            <summary>
+            增量接收
+            </summary>
+            <param name="ar"></param>
         </member>
         <member name="T:Fursion_CSharpTools.Net.Server.Service_IOSystem">
             <summary>
@@ -204,6 +204,14 @@
             数据传送
             </summary>
             <param name="bs"></param>
+        </member>
+        <member name="M:Fursion_CSharpTools.AsyncJob.TaskCore.Run``1(Fursion_CSharpTools.AsyncJob.IJobTaskGet{``0})">
+            <summary>
+            运行一个带返回值的任务
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="jobTask"></param>
+            <returns></returns>
         </member>
         <member name="T:Fursion_CSharpTools.SocketCallBack">
             <summary>
