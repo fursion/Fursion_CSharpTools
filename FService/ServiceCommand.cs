@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using Fursion_CSharpTools;
 using Fursion_CSharpTools.Net.Public;
+using Fursion_CSharpTools.Core;
 using Fursion_CSharpTools.Tools;
 using Fursion_CSharpTools.AsyncJob;
 
@@ -16,12 +17,12 @@ namespace GameServerMain
             public int i;
             public void CallBack(object obj)
             {
-                FDebug.Log("回调 {0}  线程ID：{1}",i*i,Thread.CurrentThread.ManagedThreadId);
+                FDebug.Log("回调 {0}  线程ID：{1}", i * i, Thread.CurrentThread.ManagedThreadId);
             }
 
             public void Execute(object obj)
             {
-                FDebug.Log("{0}   线程ID：{1}", i,Thread.CurrentThread.ManagedThreadId);
+                FDebug.Log("{0}   线程ID：{1}", i, Thread.CurrentThread.ManagedThreadId);
             }
         }
         struct TestjobGet1 : IJobTaskGet<int>
@@ -34,32 +35,25 @@ namespace GameServerMain
             public int Execute(object obj)
             {
                 FDebug.Log("执行任务");
-                return Thread.CurrentThread.ManagedThreadId*i;
+                return Thread.CurrentThread.ManagedThreadId * i;
             }
         }
 
         public void CheckCommand()
         {
-            string Commend = Console.ReadLine();
-            switch (Commend)
-            {
-                case "Encodefile": Encodefile(); break;
-                case "testjob": Testjob(); break;
-                case "jobtask": JobTest(); break;
-                default: Console.WriteLine(@"Not found this ""{0}"" command", Commend); break;
-            }
+            string Commend = Console.ReadLine();           
+            var function = Fursion_CSharpTools.CSharpTools.GetMethodDo<ServiceCommand>(Commend);
+            if (function != null)
+                function.Invoke(this, null);
+            else
+                FDebug.Log(@"Not found this ""{0}"" command", Commend);
         }
+        [TestAttribute("fursion","2021.7.8")]
         public async void JobTest()
         {
-            //for (int i = 0; i < 3000; i++)
-            //{
-            //    Testjob1 testjob = new Testjob1();
-            //    testjob.i = i;
-            //    TaskCore.Run(testjob);
-            //}
             TestjobGet1 testjobGet1 = new TestjobGet1();
             testjobGet1.i = 2;
-            var tr= await TaskCore.Run(testjobGet1);
+            var tr = await TaskCore.Run(testjobGet1);
             Console.WriteLine(tr);
             Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
 
@@ -79,11 +73,18 @@ namespace GameServerMain
             F_IO.CreateAndWrite(string.Format(@"{0}\{1}.iv", SavePath, filename), DeTuple.Item3);
             Console.WriteLine("加密完成，文件输出在 {0}", SavePath);
         }
-        public void Testjob()
+        public static void Mailtest()
         {
-            byte[] ts = new byte[] { 12, 23, 45, 67, 89, 80, };
-            using DataProcessJod job1 = new DataProcessJod() { Data = ts, State = true };
-            DataProcessing.GetInstance().AddData(job1);
+            MailPush.SendNewVerifyMail();
+        }
+        public unsafe static void Test()
+        {
+            DataPacket dataPacket = new DataPacket();  
+            Console.WriteLine(CSharpTools.GetObjectSize(dataPacket)); 
+        }
+        public static void Quit()
+        {        
+            Environment.Exit(0);
         }
     }
 }

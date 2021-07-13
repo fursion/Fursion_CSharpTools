@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ClassTool\" />
     <Folder Include="Net\HTTP\" />
   </ItemGroup>
 

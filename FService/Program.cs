@@ -41,14 +41,6 @@ namespace GameServerMain
 
             FDebug.Log("收到信号");
         }
-        public static void test()
-        {
-            for (int i = 0; i < 10000; i++)
-            {
-                byte[] ts = new byte[] { (byte)i, (byte)i, (byte)i, (byte)i, (byte)i, (byte)i, (byte)i, (byte)i };
-                using DataProcessJod job1 = new DataProcessJod() { Data = ts, State = true };
-                DataProcessing.GetInstance().AddData(job1);
-            }
-        }
+     
     }
 }

@@ -30,21 +30,10 @@
             <param name="connect"></param>
             <returns></returns>
         </member>
-        <member name="T:Fursion_CSharpTools.Net.Public.NetDataProcessing">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="T:Fursion_CSharpTools.Net.Public.DataProcessJod">
             <summary>
             数据处理作业实体，适用于服务端
             </summary>
-        </member>
-        <member name="M:Fursion_CSharpTools.Net.Public.DataProcessing.GetTobJob">
-            <summary>
-            取出一份数据处理作业
-            </summary>
-            <returns>作业实体</returns>
         </member>
         <member name="M:Fursion_CSharpTools.Net.Client.Connect_To.SubReceiveCb(System.IAsyncResult)">
             <summary>

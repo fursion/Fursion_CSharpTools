@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fursion_CSharpTools", "Furs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolTools", "..\ProtocolTools\ProtocolTools.csproj", "{6E34C47E-53A5-4DD7-BCA1-37D7671A581F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FService", "FService\FService.csproj", "{C693D925-9943-4395-BAF4-1E58B14EFDA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FService", "FService\FService.csproj", "{C693D925-9943-4395-BAF4-1E58B14EFDA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

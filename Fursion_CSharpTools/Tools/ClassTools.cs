@@ -96,15 +96,26 @@ namespace Fursion_CSharpTools
         /// </summary>
         /// <typeparam name="T">类型</typeparam>
         /// <param name="MethodName">方法名</param>
-        public static void GetMethodDo<T>(string MethodName) where T:new()
+        public static MethodInfo GetMethodDo<T>(string MethodName) where T:new()
         {
-            T obj = new T();
-            Type type = obj.GetType();
-            MethodInfo method = type.GetMethod(MethodName, new Type[] { });
-            object[] parameters = null;
-            method.Invoke(obj, parameters);
+            //T obj = new T();
+            Type typeinfo = typeof(T);
+            //Type type = obj.GetType();
+            MethodInfo method = typeinfo.GetMethod(MethodName, new Type[] { });
+            //object[] parameters = null;
+            //method.Invoke(obj, parameters);
+            return method;
         }
-
+        public static int GetObjectSize<T>(T Structure)
+        {
+            return System.Runtime.InteropServices.Marshal.SizeOf(Structure);
+        }
+        public static double GetRandom(int min,int max)
+        {
+            Random ran = new Random();
+            double time = ran.Next(min,max);
+            return time;
+        }
         
     }
 
