@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Fursion_CSharpTools.Core;
 using Fursion_CSharpTools;
 using Fursion_CSharpTools.Tools;
 using Fursion_CSharpTools.Net.Server;
@@ -27,10 +28,12 @@ namespace GameServerMain
         }
         static void Main(string[] args)
         {
+            SecurityManagement.NowUserRights = SystemRights.root;
             var s = Service_IOSystem.CreateMySQLConnectionStatement("TankTest", "cdb-ahtsamo2.cd.tencentcdb.com", "root", "Dj199706194430", 10000);
             Service_IOSystem.GetInstance().ConnectSQL(s);
             Console.Title = "GameService";
             TCPConnectMonitor.GetInstance().StarServer("127.0.0.1", 1024, SocketCall);
+            SecurityManagement.Rights();
             while (true)
             {
                 ServiceCommand.GetInstance().CheckCommand();

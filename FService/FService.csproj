@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Fursion_CSharpTools\Fursion_CSharpTools.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Core\" />
-  </ItemGroup>
-
 </Project>

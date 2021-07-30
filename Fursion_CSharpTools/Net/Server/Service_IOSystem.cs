@@ -4,12 +4,13 @@ using System.Text;
 using System.Threading;
 using MySql.Data;
 using Fursion_CSharpTools.Tools;
+using Fursion_CSharpTools.AsyncJob;
 using MySql.Data.MySqlClient;
 
 namespace Fursion_CSharpTools.Net.Server
 {
     /// <summary>
-    /// 服务器端的IO操作类，包含远程数据库和本地文存储
+    /// 服务器端的IO操作类，包含远程数据库和本地文件存储
     /// </summary>
     public class Service_IOSystem : Singleton<Service_IOSystem>
     {
@@ -41,7 +42,7 @@ namespace Fursion_CSharpTools.Net.Server
         /// <summary>
         /// MySQL-Select查询语句模板；需要的参数，查询的列名，表名，限制条件
         /// </summary>
-        private const string MySQLSelectStatementTemplate = "select {0} from {1} where {2};";
+        private const string MySQLSelectStatementTemplate = "select * from {0} where {1} = {2};";
         /// <summary>
         /// 拼接数据库查询语句
         /// </summary>
@@ -49,21 +50,21 @@ namespace Fursion_CSharpTools.Net.Server
         /// <param name="TableName">数据表的名字</param>
         /// <param name="Restrictions">查询的限制条件</param>
         /// <returns></returns>
-        public static string CreateMySQLSelectStatement(string ColumnName,string TableName,string Restrictions)
+        public static string CreateMySQLSelectStatement(string ColumnName, string TableName, string Restrictions)
         {
-            var SQLSelectStatement = string.Format(MySQLSelectStatementTemplate,ColumnName,TableName,Restrictions);
+            var SQLSelectStatement = string.Format(MySQLSelectStatementTemplate, TableName, ColumnName, Restrictions);
             return SQLSelectStatement;
         }
         /// <summary>
         /// 查询语句
         /// </summary>
         /// <param name="term"></param>
-        /// <param name="MathSymbol">数学符号：= > >=  <![CDATA[=,<,>,>=,<=]]></param>
+        /// <param name="MathSymbol">数学符号：= > >= <![CDATA[=,<,>,>=,<=]]></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string CreatSelectRestrictions(string term,string MathSymbol,object value)
+        public static string CreatSelectRestrictions(string term, string MathSymbol, object value)
         {
-            var Restrictions = string.Format("{0}{1}{2}",term,MathSymbol,value);
+            var Restrictions = string.Format("{0}{1}{2}", term, MathSymbol, value);
             return Restrictions;
         }
         /// <summary>
@@ -71,7 +72,7 @@ namespace Fursion_CSharpTools.Net.Server
         /// </summary>
         /// <param name="SQLConnectionStatement"></param>
         /// <returns></returns>
-        public MySqlConnection ConnectSQL(string SQLConnectionStatement)
+        public static MySqlConnection ConnectSQL(string SQLConnectionStatement)
         {
             FDebug.Log("连接数据库中...");
             MySqlConnection SqlConnect = new MySqlConnection(SQLConnectionStatement);
@@ -83,7 +84,7 @@ namespace Fursion_CSharpTools.Net.Server
             }
             catch (MySqlException SqlEx)
             {
-                FDebug.Log("连接数据库失败： {0}",SqlEx.Message);
+                FDebug.Log("连接数据库失败： {0}", SqlEx.Message);
                 return SqlConnect;
             }
         }
@@ -94,8 +95,10 @@ namespace Fursion_CSharpTools.Net.Server
         /// <summary>
         /// 数据查询
         /// </summary>
-        public void QueryData()
+        public void QueryData(string table, string itemName, string item)
         {
+            var mysql = ConnectSQL(CreateMySQLConnectionStatement("TankTest", "cdb-ahtsamo2.cd.tencentcdb.com", "root", "Dj199706194430", 10000));
+            MySqlCommand mySqlCommand = new MySqlCommand(CreateMySQLSelectStatement(itemName, table, item), mysql);
 
         }
         /// <summary>
@@ -127,6 +130,25 @@ namespace Fursion_CSharpTools.Net.Server
         {
 
         }
+        public struct SQLJob:IJobTask
+        {
+            public string mysqlcmdStr;
+            public string mysqlconnStr;
+
+            public void CallBack(object obj)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Execute(object obj)
+            {
+                using(MySqlConnection mySql = Service_IOSystem.ConnectSQL(mysqlconnStr))
+                {
+
+                }
+            }
+        }
+
     }
     /// <summary>
     /// 

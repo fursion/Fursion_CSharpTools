@@ -7,12 +7,13 @@ using System.Net.Mime;
 using System.IO;
 using Fursion_CSharpTools.Tools;
 using Fursion_CSharpTools.AsyncJob;
+using System.Threading.Tasks;
 
 namespace Fursion_CSharpTools.Core
 {
     public class MailPush
     {
-        public struct VerifyeMail : IJobTask
+        public struct VerifyeMail : IJobTaskGet<string>
         {
             private string _subject;
             public string Subject { get { return _subject; } set { _subject = value; } }
@@ -30,15 +31,15 @@ namespace Fursion_CSharpTools.Core
             }
             public void CallBack(object obj)
             {
-                FDebug.Log("发送完成");
+                FDebug.Log(((Task)obj).Status.ToString());
             }
 
-            public void Execute(object obj)
+            string IJobTaskGet<string>.Execute(object obj)
             {
                 try
                 {
                     MailMessage mailMsg = new MailMessage();
-                    mailMsg.From = new MailAddress("fursion@mailpush.fursion.cn", "fursion");
+                    mailMsg.From = new MailAddress("mailpush@mail.fursion.cn", "fursion");
                     mailMsg.To.Add(new MailAddress(Addressee));
                     //mailMsg.CC.Add("抄送人地址");
                     //mailMsg.Bcc.Add("密送人地址");
@@ -47,8 +48,8 @@ namespace Fursion_CSharpTools.Core
                     // 邮件主题
                     mailMsg.Subject = Subject;
                     // 邮件正文内容
-                    mailMsg.Body = MailText;
-                    mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(MailText, null, MediaTypeNames.Text.Plain));
+                    //mailMsg.Body = MailText;
+                    mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(MailText, null, MediaTypeNames.Text.Html));
                     mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(MailHtml, null, MediaTypeNames.Text.Html));
                     // 添加附件
                     if (System.IO.File.Exists(File))
@@ -57,64 +58,29 @@ namespace Fursion_CSharpTools.Core
                         mailMsg.Attachments.Add(data);
                     }
                     //邮件推送的SMTP地址和端口
-                    SmtpClient smtpClient = new SmtpClient("smtpdm.aliyun.com", 25);
-                    //C#官方文档介绍说明不支持隐式TLS方式，即465端口，需要使用25或者80端口(ECS不支持25端口)，另外需增加一行 smtpClient.EnableSsl = true; 故使用SMTP加密方式需要修改如下：
-                    //SmtpClient smtpClient = new SmtpClient("smtpdm.aliyun.com", 80);
+                    SmtpClient smtpClient = new SmtpClient("mail.fursion.cn", 25);
                     //smtpClient.EnableSsl = true;
                     // 使用SMTP用户名和密码进行验证
-                    System.Net.NetworkCredential credentials = new System.Net.NetworkCredential("fursion@mailpush.fursion.cn", "FUrsion20210710");
+                    System.Net.NetworkCredential credentials = new System.Net.NetworkCredential("mailpush@mail.fursion.cn", "dj970619");
                     smtpClient.Credentials = credentials;
                     smtpClient.Send(mailMsg);
+                    return "send successfuly";
                 }
                 catch (Exception ex)
                 {
                     FDebug.Log(ex.ToString());
+                    return ex.Message;
                 }
             }
         }
-
-        private  static void Send()
+        public static void sendmail()
         {
-            try
-            {
-                MailMessage mailMsg = new MailMessage();
-                mailMsg.From = new MailAddress("fursion@mailpush.fursion.cn", "fursion");
-                mailMsg.To.Add(new MailAddress("604357968@qq.com"));
-                //mailMsg.CC.Add("抄送人地址");
-                //mailMsg.Bcc.Add("密送人地址");
-                //可选，设置回信地址 
-                mailMsg.ReplyToList.Add("fursion@fursion.cn");
-                // 邮件主题
-                mailMsg.Subject = "邮件主题C#测试";
-                // 邮件正文内容
-                string text = "欢迎使用阿里云邮件推送";
-                string html = @"欢迎使用<a href=""https://dm.console.aliyun.com"">邮件推送</a>";
-                mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(text, null, MediaTypeNames.Text.Plain));
-                mailMsg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
-                // 添加附件
-                string file = "D:\\1.txt";
-                Attachment data = new Attachment(file, MediaTypeNames.Application.Octet);
-                mailMsg.Attachments.Add(data);
-                //邮件推送的SMTP地址和端口
-                SmtpClient smtpClient = new SmtpClient("smtpdm.aliyun.com", 25);
-                //C#官方文档介绍说明不支持隐式TLS方式，即465端口，需要使用25或者80端口(ECS不支持25端口)，另外需增加一行 smtpClient.EnableSsl = true; 故使用SMTP加密方式需要修改如下：
-                //SmtpClient smtpClient = new SmtpClient("smtpdm.aliyun.com", 80);
-                //smtpClient.EnableSsl = true;
-                // 使用SMTP用户名和密码进行验证
-                System.Net.NetworkCredential credentials = new System.Net.NetworkCredential("fursion@mailpush.fursion.cn", "FUrsion20210710");
-                smtpClient.Credentials = credentials;
-                smtpClient.Send(mailMsg);
-                Console.WriteLine("发送完成");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
+ 
         }
-        public static void SendNewVerifyMail()
+        public static async Task SendNewVerifyMailAsync()
         {
-            VerifyeMail verifyeMail = new VerifyeMail("验证码", "234890", @"欢迎使用<a href=""https://dm.console.aliyun.com"">邮件推送</a>", @"D:\OneDrive\桌面\log\杜洁2021年5月1.5倍加班.docx", "604357968@qq.com");
-            TaskCore.Run(verifyeMail);
+            VerifyeMail verifyeMail = new VerifyeMail("验证码", CSharpTools.CreateUUID().ToString(), "", null, "604357968@qq.com");
+            await TaskCore.Run(verifyeMail);
         }
     }
 }

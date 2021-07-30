@@ -75,12 +75,16 @@ namespace GameServerMain
         }
         public static void Mailtest()
         {
-            MailPush.SendNewVerifyMail();
+            MailPush.SendNewVerifyMailAsync();
         }
         public unsafe static void Test()
         {
             DataPacket dataPacket = new DataPacket();  
             Console.WriteLine(CSharpTools.GetObjectSize(dataPacket)); 
+        }
+        public static void sendmail()
+        {
+            MailPush.sendmail();
         }
         public static void Quit()
         {        
