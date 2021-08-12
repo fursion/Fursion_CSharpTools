@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using Fursion_CSharpTools.Core;
+using Fursion_CSharpTools.Core.FileTransfer;
 using Fursion_CSharpTools;
 using Fursion_CSharpTools.Tools;
 using Fursion_CSharpTools.Net.Server;
 using Fursion_CSharpTools.Net.Public;
+using Fursion_CSharpTools.Net.UDP;
 using Fursion_CSharpTools.AsyncJob;
 using System.Collections;
 using System.Text;
@@ -34,6 +36,9 @@ namespace GameServerMain
             Console.Title = "GameService";
             TCPConnectMonitor.GetInstance().StarServer("127.0.0.1", 1024, SocketCall);
             SecurityManagement.Rights();
+            FileTransfer.FileSlicing();
+            UDPMonitor uDPMonitor = new UDPMonitor();
+            uDPMonitor.SocketInit("127.0.0.1",3500);
             while (true)
             {
                 ServiceCommand.GetInstance().CheckCommand();

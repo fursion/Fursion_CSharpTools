@@ -43,7 +43,7 @@
         </member>
         <member name="T:Fursion_CSharpTools.Net.Server.Service_IOSystem">
             <summary>
-            服务器端的IO操作类，包含远程数据库和本地文存储
+            服务器端的IO操作类，包含远程数据库和本地文件存储
             </summary>
         </member>
         <member name="F:Fursion_CSharpTools.Net.Server.Service_IOSystem.MySQLConnectionStatementTemplate">
@@ -86,7 +86,7 @@
             查询语句
             </summary>
             <param name="term"></param>
-            <param name="MathSymbol">数学符号：= > >=  <![CDATA[=,<,>,>=,<=]]></param>
+            <param name="MathSymbol">数学符号：= > >= <![CDATA[=,<,>,>=,<=]]></param>
             <param name="value"></param>
             <returns></returns>
         </member>
@@ -97,7 +97,7 @@
             <param name="SQLConnectionStatement"></param>
             <returns></returns>
         </member>
-        <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.QueryData">
+        <member name="M:Fursion_CSharpTools.Net.Server.Service_IOSystem.QueryData(System.String,System.String,System.String)">
             <summary>
             数据查询
             </summary>
@@ -201,6 +201,21 @@
             <typeparam name="T"></typeparam>
             <param name="jobTask"></param>
             <returns></returns>
+        </member>
+        <member name="T:Fursion_CSharpTools.Core.FileTransfer.FileTransfer">
+            <summary>
+            提供文件传输功能的类
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Core.FileTransfer.FileTransfer.FileSlicing">
+            <summary>
+            文件切片
+            </summary>
+        </member>
+        <member name="T:Fursion_CSharpTools.Core.FileTransfer.TransferTask">
+            <summary>
+            传输作业实体
+            </summary>
         </member>
         <member name="T:Fursion_CSharpTools.SocketCallBack">
             <summary>

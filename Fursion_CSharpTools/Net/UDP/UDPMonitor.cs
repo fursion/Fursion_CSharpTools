@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Text;
 using Fursion_CSharpTools.Core;
 using System.Threading;
 using System.Threading.Tasks;
+using Fursion_CSharpTools.AsyncJob;
 
 namespace Fursion_CSharpTools.Net.UDP
 {
@@ -14,17 +16,18 @@ namespace Fursion_CSharpTools.Net.UDP
         public bool IsUse { get; set; }
         public const int BUFFER_SIZE = 1024;
         public byte[] Buffer { get; set; }
+        public UdpClient UDP_Server;
         public Socket R_Socket { get; set; }
-        public EndPoint EndPoint;
+        public IPEndPoint EndPoint;
         public UDP_Data_Receive_Component()
         {
             Buffer = new byte[BUFFER_SIZE];
             EndPoint = new IPEndPoint(IPAddress.Any, 0);
         }
-        public UDP_Data_Receive_Component(Socket socket)
+        public UDP_Data_Receive_Component(UdpClient udpClient)
         {
             Buffer = new byte[BUFFER_SIZE];
-            R_Socket = socket;
+            UDP_Server = udpClient;
             EndPoint = new IPEndPoint(IPAddress.Any, 0);
         }
         public override ValueTask DisposeAsync()
@@ -58,35 +61,51 @@ namespace Fursion_CSharpTools.Net.UDP
         {
             Dispose(false);
         }
+        private UdpClient UDP_Service;
         private Socket UDP_Service_Socket;
         private const int BUFFER_SIZE = 1024;
         private byte[] ReadBuffer;
+        int i = 0;
+        private FileStream Save_stream;
         //private IPEndPoint IPEndPoint_Receive;
         public void SocketInit(string IpAddress, int Port)
         {
-            UDP_Service_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            IPEndPoint UDP_Service_IPAddress = new IPEndPoint(IPAddress.Parse(IpAddress), Port);
-            UDP_Service_Socket.Bind(UDP_Service_IPAddress);
-
+            IPEndPoint ipe = new IPEndPoint(IPAddress.Parse(IpAddress), Port);
+            UDP_Service = new UdpClient(ipe);
+            Save_stream = new FileStream(@"D:\迅雷下载\Savefile.txt", FileMode.Create, FileAccess.Write);
             ThreadPool.QueueUserWorkItem(UDP_Receive);
 
         }
         EndPoint TempRemoteEp = new IPEndPoint(IPAddress.Any, 0);
         public void UDP_Receive(object State)
         {
-            while (true)
-            {
-                var udpd = UDPComponentPool.UDPDataComponent(UDP_Service_Socket);
-                UDP_Service_Socket.BeginReceiveFrom(udpd.Buffer, 0, UDP_Data_Receive_Component.BUFFER_SIZE, SocketFlags.None, ref udpd.EndPoint, BeginReceiveCallback, udpd);
-            }
+            var udpd = UDPComponentPool.UDPDataComponent(UDP_Service);
+            UDP_Service.BeginReceive(BeginReceiveCallback, udpd);
         }
         public void BeginReceiveCallback(IAsyncResult ar)
         {
+            i++;
             UDP_Data_Receive_Component uDP_Data_ = (UDP_Data_Receive_Component)ar.AsyncState;
-            int bytes = uDP_Data_.R_Socket.EndReceiveFrom(ar, ref uDP_Data_.EndPoint);
+            var dd = uDP_Data_.UDP_Server.EndReceive(ar, ref uDP_Data_.EndPoint);
+            Console.WriteLine(i);
+            var udpd = UDPComponentPool.UDPDataComponent(UDP_Service);
+            UDP_Service.BeginReceive(BeginReceiveCallback, uDP_Data_);
+            UDPtask uDPtask = new UDPtask { stream=Save_stream, UDP_Data_ = dd };
+            TaskCore.Run(uDPtask);
+        }
+    }
+    public struct UDPtask : IJobTask
+    {
+        public FileStream stream;
+        public byte[]  UDP_Data_;
+        public void CallBack(object obj)
+        {
+            throw new NotImplementedException();
+        }
 
-            var udpd = UDPComponentPool.UDPDataComponent(UDP_Service_Socket);
-            UDP_Service_Socket.BeginReceiveFrom(udpd.Buffer, 0, UDP_Data_Receive_Component.BUFFER_SIZE, SocketFlags.None, ref udpd.EndPoint, BeginReceiveCallback, udpd);
+        public void Execute(object obj)
+        {
+            stream.Write(UDP_Data_);
         }
     }
 }
