@@ -2,9 +2,15 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
+using Fursion_CSharpTools.Net;
 
 namespace Fursion_CSharpTools.Core.FileTransfer
 {
+    public enum FileTransferType
+    {
+        Upload,
+        Download
+    }
     /*
      * FILE_NUMBER
      * CHUNK_NUMBER
@@ -13,8 +19,10 @@ namespace Fursion_CSharpTools.Core.FileTransfer
     /// <summary>
     /// 提供文件传输功能的类
     /// </summary>
+    
     public class FileTransfer:Service
     {
+        public TCP_Only_Service TCP_Only_Service { get; set; }
         public const int FILE_CHUNK = 1024 * 1024 * 1;//每个文件块的最大大小
         /// <summary>
         /// 文件切片

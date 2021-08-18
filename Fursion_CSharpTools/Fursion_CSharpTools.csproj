@@ -9,6 +9,11 @@
     <DocumentationFile>F:\FursionProtocolTools\Fursion_CSharpTools\Fursion_CSharpTools\Fursion_CSharpTools.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>5</WarningLevel>
+    <DocumentationFile>D:\FursionProtocolTools\Fursion_CSharpTools\Fursion_CSharpTools\Fursion_CSharpTools.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Folder Include="Net\HTTP\" />
   </ItemGroup>

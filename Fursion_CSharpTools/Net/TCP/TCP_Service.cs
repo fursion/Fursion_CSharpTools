@@ -17,10 +17,15 @@ namespace Fursion_CSharpTools.Net
                 TcpServerListener.Stop();
                 GC.SuppressFinalize(this);
             }
-               
+
         }
         public TcpListener TcpServerListener;
-        public TcpClient TcpClient;
+        private TcpClient _tcpClient;
+        public TcpClient TcpClient
+        {
+            get { return _tcpClient; }
+            set { _tcpClient = value; }
+        }
         public TCP_Only_Service(string ipaddress, int Port)
         {
             IPAddress iPAddress = IPAddress.Parse(ipaddress);
@@ -29,18 +34,18 @@ namespace Fursion_CSharpTools.Net
             DoBeginAcceptTcpClient(TcpServerListener);
         }
         public static ManualResetEvent tcpClientConnected = new ManualResetEvent(false);
-        public  void DoBeginAcceptTcpClient(TcpListener listener)
+        public void DoBeginAcceptTcpClient(TcpListener listener)
         {
             tcpClientConnected.Reset();
-            listener.BeginAcceptTcpClient(DoAcceptTcpClientCallback,this);
+            listener.BeginAcceptTcpClient(DoAcceptTcpClientCallback, this);
             tcpClientConnected.WaitOne();
         }
-        public  void DoAcceptTcpClientCallback(IAsyncResult ar)
+        public void DoAcceptTcpClientCallback(IAsyncResult ar)
         {
             TcpListener listener = (TcpListener)ar.AsyncState;
             TcpClient = listener.EndAcceptTcpClient(ar);
             tcpClientConnected.Set();
-            
+
         }
     }
 }
