@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Fursion_CSharpTools.Core;
 using Fursion_CSharpTools.Core.FileTransfer;
@@ -36,9 +37,14 @@ namespace GameServerMain
             Console.Title = "GameService";
             TCPConnectMonitor.GetInstance().StarServer("127.0.0.1", 1024, SocketCall);
             SecurityManagement.Rights();
-            FileTransfer.FileSlicing();
+            FileTransfer fileTransfer = new FileTransfer();
             UDPMonitor uDPMonitor = new UDPMonitor();
             uDPMonitor.SocketInit("127.0.0.1",3500);
+            string pa = "./";
+            DirectoryInfo directoryInfo = new DirectoryInfo(pa);
+            F_IO.SearchDirectory(directoryInfo);
+            F_IO.Searchfile(directoryInfo);
+            Console.WriteLine(directoryInfo.FullName);
             while (true)
             {
                 ServiceCommand.GetInstance().CheckCommand();

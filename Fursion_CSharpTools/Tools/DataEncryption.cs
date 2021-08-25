@@ -6,6 +6,13 @@ using System.Text;
 
 namespace Fursion_CSharpTools.Tools
 {
+    public static class EnCode
+    {
+        public static string file_MD5()
+        {
+            return null;
+        }
+    }
     public class EncryptHelp : IDisposable
     {
         bool disposed = false;

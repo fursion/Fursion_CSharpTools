@@ -7,13 +7,14 @@ using Fursion_CSharpTools.Tools;
 using Fursion_CSharpTools.Net;
 namespace Fursion_CSharpTools.Core.FileTransfer
 {
-    public class FileDownload:IDisposable
+    public class FileDownload :TransferService,IDisposable
     {
         public TcpClient TcpClient { get; set; }
         private NetworkStream DownNetworkStream;
         private const int ReadBufferSize = 1024;
         private byte[] ReadBuffer;
         private bool loaded = false;
+        private bool IsDisposable = false;
         /// <summary>
         /// 表示文件是否下载完成的属性
         /// </summary>
@@ -28,11 +29,11 @@ namespace Fursion_CSharpTools.Core.FileTransfer
         public FileDownload()
         {
 
-            
+
         }
         public void Start()
         {
-            
+
         }
         public void Connected(IAsyncResult ar)
         {
@@ -46,7 +47,7 @@ namespace Fursion_CSharpTools.Core.FileTransfer
             NetworkStream networkStream = (NetworkStream)ar.AsyncState;
             int numberOfBytesRead;
             numberOfBytesRead = networkStream.EndRead(ar);
-            File_Stream.WriteAsync(ReadBuffer,0,ReadBuffer.Length);
+            File_Stream.WriteAsync(ReadBuffer, 0, ReadBuffer.Length);
             UpdateProgress();
             while (networkStream.DataAvailable)
             {
@@ -61,12 +62,12 @@ namespace Fursion_CSharpTools.Core.FileTransfer
         {
 
         }
-        public void CreatFileStream()
+        public void CreatSaveFileStream()
         {
             //发起文件传输的请求,包含文件的属性信息 =>f ileinfo
 
             //检查存储路径是否存在
-                //不存在则创建目录
+            //不存在则创建目录
             //新建临时文件保存数据
 
             //向临时文件写入数据
@@ -81,9 +82,10 @@ namespace Fursion_CSharpTools.Core.FileTransfer
         }
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if (IsDisposable)
+                throw new NotImplementedException();
         }
-        bool IsDisposable = false;
+
         public void Disposeing()
         {
             TcpClient.Close();
@@ -91,6 +93,7 @@ namespace Fursion_CSharpTools.Core.FileTransfer
             DownNetworkStream.Close();
             File_Stream.Flush();
             File_Stream.Close();
+            IsDisposable = true;
         }
     }
 }

@@ -202,6 +202,21 @@
             <param name="jobTask"></param>
             <returns></returns>
         </member>
+        <member name="P:Fursion_CSharpTools.Core.FileTransfer.FileDownload.Loaded">
+            <summary>
+            表示文件是否下载完成的属性
+            </summary>
+        </member>
+        <member name="P:Fursion_CSharpTools.Core.FileTransfer.FileDownload.Progress">
+            <summary>
+            表示文件下载进度的属性
+            </summary>
+        </member>
+        <member name="M:Fursion_CSharpTools.Core.FileTransfer.FileDownload.UpdateProgress">
+            <summary>
+            更新进度
+            </summary>
+        </member>
         <member name="T:Fursion_CSharpTools.Core.FileTransfer.FileTransfer">
             <summary>
             提供文件传输功能的类
@@ -431,7 +446,7 @@
             </summary>
             <param name="TargetDirectory"></param>
         </member>
-        <member name="M:Fursion_CSharpTools.Tools.F_IO.SearchDirectory(System.String,System.String)">
+        <member name="M:Fursion_CSharpTools.Tools.F_IO.SearchFileForDirectory(System.String,System.String)">
             <summary>
             检索指定目录下给定类型的文件
             </summary>

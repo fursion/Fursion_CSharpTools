@@ -94,7 +94,7 @@ namespace Fursion_CSharpTools.Tools
         /// <param name="TargetDirectory">路径</param>
         /// <param name="searchPattern">文件扩展名 列 .xlsx  .docx * ?</param>
         /// <returns></returns>
-        public static IEnumerable<string> SearchDirectory(string TargetDirectory,string searchPattern)
+        public static IEnumerable<string> SearchFileForDirectory(string TargetDirectory,string searchPattern)
         {
             var files = Directory.EnumerateFiles(TargetDirectory, searchPattern, SearchOption.AllDirectories);
             foreach(var item in files)
@@ -102,6 +102,24 @@ namespace Fursion_CSharpTools.Tools
                 FDebug.Log(item);
             }
             return files;
+        }
+        public static IEnumerable<DirectoryInfo> SearchDirectory(DirectoryInfo info)
+        {
+            var infos = info.EnumerateDirectories(); 
+            foreach (var item in infos)
+            {
+                FDebug.Log(item.Name);
+            }
+            return infos;
+        }
+        public static IEnumerable<FileInfo> Searchfile(DirectoryInfo info)
+        {
+            var infos = info.GetFiles(); 
+            foreach (var item in infos)
+            {
+                FDebug.Log(item.Name);
+            }
+            return infos;
         }
     }
 }

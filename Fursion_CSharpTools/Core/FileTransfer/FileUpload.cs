@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Fursion_CSharpTools.Core.FileTransfer
 {
-    public class FileUpload
+    public class FileUpload:TransferService
     {
 
 
