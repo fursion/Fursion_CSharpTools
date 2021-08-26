@@ -10,7 +10,7 @@ namespace Fursion_CSharpTools.Core
     }
     public class TransferService : Service
     {
-
+        public string filePath;
     }
 
 }

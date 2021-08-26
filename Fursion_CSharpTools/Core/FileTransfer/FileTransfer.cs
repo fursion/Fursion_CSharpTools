@@ -37,6 +37,7 @@ namespace Fursion_CSharpTools.Core.FileTransfer
         public FileTransferState FileTransferState { get { return transferState; } }
         public TCP_Only_Service TCP_Only_Service { get; set; }//TCP监听服务
         public const int FILE_CHUNK = 1024 * 1024 * 1;//每个文件块的最大大小
+        public string CURL;
         private TcpClient Client;
         /// <summary>
         /// 文件切片
